@@ -1,0 +1,3669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LSC">
+<title>Life School Camps</title>
+<style>
+:root {
+  --teal:#006D77; --teal-mid:#4AABB5; --teal-lt:#E8F4F5;
+  --yellow:#FFC300; --yellow-lt:#FFFAE5;
+  --green:#27AE60; --green-lt:#EAFAF1;
+  --red:#E74C3C; --red-lt:#FDEDEC;
+  --orange:#E67E22; --orange-lt:#FEF9E7;
+  --purple:#8E44AD; --purple-lt:#F5EEF8;
+  --dark:#1A1A2E; --grey:#F5F5F5; --border:#E0ECEE;
+  --radius:14px; --shadow:0 4px 24px rgba(0,109,119,.1);
+  --font:-apple-system,'SF Pro Display','Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:#EEF6F7;font-family:var(--font);color:var(--dark);}
+
+/* HEADER */
+#app-header{background:linear-gradient(135deg,var(--teal) 0%,#004d55 100%);
+  padding:env(safe-area-inset-top,0) 0 0;position:sticky;top:0;z-index:50;
+  box-shadow:0 4px 20px rgba(0,109,119,.3);}
+.hdr-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;}
+.logo-wrap{display:flex;align-items:center;gap:12px;}
+.logo-icon{font-size:32px;}
+.logo-title{color:#fff;font-size:18px;font-weight:900;letter-spacing:1.5px;line-height:1.1;}
+.logo-sub{color:#83C5BE;font-size:11px;font-weight:500;}
+.hdr-btn{background:var(--yellow);color:var(--dark);border:none;border-radius:10px;
+  padding:9px 16px;font-size:14px;font-weight:700;cursor:pointer;
+  display:flex;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(255,195,0,.4);}
+
+/* NAV */
+.nav-bar{display:flex;background:#fff;border-bottom:2px solid var(--border);
+  position:sticky;top:60px;z-index:40;overflow-x:auto;scrollbar-width:none;}
+.nav-bar::-webkit-scrollbar{display:none;}
+.nav-btn{flex:1;min-width:70px;padding:12px 6px;border:none;background:transparent;
+  font-family:var(--font);font-size:12px;font-weight:600;color:#888;cursor:pointer;
+  border-bottom:3px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s;}
+.nav-btn.active{color:var(--teal);border-bottom-color:var(--teal);}
+
+/* VIEWS */
+.view{display:none;padding:18px;max-width:1200px;margin:0 auto;}
+.view.active{display:block;}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.kpi-card{background:#fff;border-radius:var(--radius);padding:18px 16px;
+  border-top:4px solid var(--accent,var(--teal));box-shadow:var(--shadow);}
+.kpi-lbl{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.kpi-val{font-size:26px;font-weight:900;color:var(--dark);line-height:1;}
+.kpi-unit{font-size:12px;color:#aaa;font-weight:500;}
+
+/* CARD */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden;}
+.card-title{font-size:15px;font-weight:800;color:var(--dark);padding:16px 18px 0;}
+
+/* BAR CHART */
+.bar-chart-wrap{padding:14px 18px 10px;overflow-x:auto;}
+.bar-chart{display:flex;align-items:flex-end;gap:5px;min-height:110px;}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:38px;}
+.bar-rev{font-size:8px;color:#888;font-weight:600;white-space:nowrap;height:12px;}
+.bar-body{width:28px;border-radius:5px 5px 0 0;min-height:4px;transition:height .4s;}
+.bar-lbl{font-size:10px;color:var(--teal);font-weight:700;}
+.bar-cnt{font-size:9px;color:#bbb;}
+.best-banner{margin:0 18px 14px;padding:10px 14px;background:var(--yellow-lt);
+  border-radius:10px;font-size:13px;color:var(--orange);font-weight:600;}
+
+/* AGED ALERT */
+.aged-alert{border-left:4px solid var(--red);}
+.aged-list{display:flex;flex-wrap:wrap;gap:8px;padding:10px 18px 14px;}
+.aged-badge{padding:4px 12px;background:var(--red-lt);color:var(--red);border-radius:20px;font-size:12px;font-weight:600;}
+
+/* SEARCH */
+.search-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.search-input{flex:1;min-width:180px;padding:10px 14px;border:2px solid var(--border);
+  border-radius:10px;font-size:14px;font-family:var(--font);outline:none;background:#fff;}
+.group-badge{background:linear-gradient(135deg,var(--teal),var(--teal-mid));
+  color:#fff;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;border-radius:var(--radius);box-shadow:var(--shadow);}
+table{width:100%;border-collapse:collapse;background:#fff;font-size:12px;}
+thead th{padding:11px 12px;background:var(--teal);color:#fff;font-weight:700;
+  white-space:nowrap;text-align:center;}
+tbody tr:nth-child(even){background:#F8FFFE;}
+tbody td{padding:9px 12px;border-bottom:1px solid #F0F6F7;text-align:center;vertical-align:middle;}
+.td-name{font-weight:700;color:var(--teal);text-align:left;}
+.age-pill{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+.week-range{display:flex;align-items:center;gap:4px;justify-content:center;}
+.nw-badge{padding:2px 7px;background:var(--teal-lt);color:var(--teal);border-radius:10px;font-size:10px;font-weight:700;}
+.status-ok{color:var(--green);font-weight:700;font-size:11px;}
+.status-bad{color:var(--red);font-weight:700;font-size:11px;}
+.status-warn{color:var(--orange);font-weight:700;font-size:11px;}
+.edit-btn{padding:5px 9px;background:#fff3cd;color:#856404;border:none;border-radius:7px;
+  cursor:pointer;font-size:11px;font-weight:700;font-family:var(--font);}
+.renew-btn{padding:5px 9px;background:var(--teal-lt);color:var(--teal);border:none;border-radius:7px;
+  cursor:pointer;font-size:11px;font-weight:700;font-family:var(--font);}
+.del-btn{padding:5px 8px;background:var(--red-lt);color:var(--red);border:none;border-radius:7px;
+  cursor:pointer;font-size:11px;font-weight:700;font-family:var(--font);}
+.empty-state{text-align:center;padding:50px 20px;color:#bbb;font-size:16px;}
+
+/* WEEKS VIEW */
+.month-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.month-tab{padding:9px 20px;border:2px solid var(--border);border-radius:20px;background:#fff;
+  cursor:pointer;font-family:var(--font);font-size:14px;font-weight:700;color:#888;transition:all .2s;}
+.month-tab.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.week-card{background:#fff;border-radius:var(--radius);margin-bottom:14px;overflow:hidden;box-shadow:var(--shadow);}
+.week-hdr{background:linear-gradient(135deg,var(--teal),var(--teal-mid));padding:14px 18px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.wk-num{background:var(--yellow);color:var(--dark);padding:3px 12px;border-radius:16px;font-size:13px;font-weight:900;}
+.wk-dates{color:#fff;font-size:13px;font-weight:600;flex:1;}
+.wk-stat{background:rgba(255,255,255,.2);color:#fff;padding:3px 10px;border-radius:14px;font-size:12px;font-weight:700;}
+.wk-rev{background:var(--yellow);color:var(--dark);padding:3px 10px;border-radius:14px;font-size:13px;font-weight:800;}
+.week-cols{display:flex;}
+.week-group{flex:1;border-right:1px solid var(--border);}
+.week-group:last-child{border-right:none;}
+.wg-hdr{padding:9px 16px;font-size:13px;font-weight:700;color:#fff;}
+.wg-row{display:flex;align-items:center;padding:9px 16px;gap:8px;border-bottom:1px solid var(--border);}
+.wg-name{flex:1;font-weight:700;font-size:13px;}
+.wg-type{font-size:11px;color:#888;background:var(--grey);padding:2px 8px;border-radius:10px;}
+.wg-pay{font-size:12px;font-weight:700;color:var(--green);}
+.wg-empty{padding:16px;color:#bbb;font-size:13px;text-align:center;}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);
+  backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:16px;}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:22px;width:100%;max-width:620px;max-height:90vh;
+  display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.modal-hdr{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(135deg,var(--teal),var(--teal-mid));border-radius:22px 22px 0 0;}
+.modal-title{color:#fff;font-size:16px;font-weight:800;}
+.close-btn{background:rgba(255,255,255,.2);border:none;color:#fff;cursor:pointer;
+  width:32px;height:32px;border-radius:50%;font-size:18px;
+  display:flex;align-items:center;justify-content:center;}
+.modal-body{padding:20px 24px;overflow-y:auto;flex:1;}
+.modal-ftr{padding:16px 24px;border-top:2px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-field{display:flex;flex-direction:column;gap:5px;}
+.form-field.full{grid-column:1/-1;}
+label{font-size:12px;font-weight:700;color:var(--dark);}
+.inp{padding:10px 13px;border:2px solid var(--border);border-radius:10px;
+  font-size:14px;font-family:var(--font);outline:none;width:100%;transition:border-color .2s;background:#fff;}
+.inp:focus{border-color:var(--teal);}
+.inp-hint{font-size:11px;color:#888;margin-top:3px;}
+.inp-hint.good{color:var(--green);}
+.inp-hint.bad{color:var(--red);}
+.radio-grp{display:flex;gap:8px;flex-wrap:wrap;}
+.radio-pill{padding:8px 14px;border:2px solid var(--border);border-radius:10px;cursor:pointer;
+  font-size:13px;font-weight:600;color:#888;transition:all .2s;user-select:none;}
+.radio-pill.on{background:var(--teal-lt);border-color:var(--teal);color:var(--teal);}
+select.inp{cursor:pointer;}
+.match-warn{background:var(--yellow-lt);border:1.5px solid var(--yellow);border-radius:10px;
+  padding:11px 14px;margin-bottom:14px;font-size:13px;color:#856404;grid-column:1/-1;line-height:1.5;}
+.match-warn strong{color:var(--teal);}
+.match-list{margin-top:8px;display:flex;flex-direction:column;gap:6px;}
+.match-item{display:flex;align-items:center;justify-content:space-between;
+  background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:12px;}
+.match-item-info{font-weight:600;color:var(--dark);}
+.match-item-sub{font-size:11px;color:#888;}
+.use-match-btn{padding:4px 10px;background:var(--teal);color:#fff;border:none;
+  border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);}
+.btn-cancel{padding:11px 24px;background:var(--grey);color:#888;border:none;border-radius:10px;
+  cursor:pointer;font-size:14px;font-weight:700;font-family:var(--font);}
+.btn-save{padding:11px 28px;background:linear-gradient(135deg,var(--teal),var(--teal-mid));
+  color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:800;
+  font-family:var(--font);box-shadow:0 4px 14px rgba(0,109,119,.35);}
+
+/* TOAST */
+#toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0));
+  left:50%;transform:translateX(-50%) translateY(80px);
+  color:#fff;padding:13px 26px;border-radius:14px;font-size:14px;font-weight:700;
+  z-index:200;box-shadow:0 8px 30px rgba(0,0,0,.25);white-space:nowrap;
+  transition:transform .3s ease,opacity .3s ease;opacity:0;pointer-events:none;}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* Shorouk accent */
+.shorouk-accent { --accent: #8E44AD; }
+.shorouk-hdr    { background: linear-gradient(135deg,#8E44AD,#A569BD) !important; }
+
+@media(max-width:500px){
+  .form-grid{grid-template-columns:1fr;}
+  .form-field.full{grid-column:1;}
+  .kpi-val{font-size:20px;}
+}
+
+/* SHARE MODAL */
+.share-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);
+  backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.share-modal-overlay.open{display:flex;}
+.share-modal{background:#fff;border-radius:22px;width:100%;max-width:560px;
+  max-height:90vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.share-hdr{padding:18px 22px;background:linear-gradient(135deg,#006D77,#4AABB5);
+  border-radius:22px 22px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.share-hdr-title{color:#fff;font-size:16px;font-weight:800;}
+.share-body{padding:20px 22px;overflow-y:auto;flex:1;}
+.share-ftr{padding:14px 22px;border-top:2px solid #E0ECEE;display:flex;gap:10px;flex-wrap:wrap;}
+.share-section-lbl{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;
+  letter-spacing:.5px;margin-bottom:8px;margin-top:14px;}
+.share-section-lbl:first-child{margin-top:0;}
+.share-pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px;}
+.share-pill{padding:9px 16px;border:2px solid #E0ECEE;border-radius:10px;cursor:pointer;
+  font-size:13px;font-weight:600;color:#888;transition:all .2s;user-select:none;font-family:var(--font);}
+.share-pill.on{background:#E8F4F5;border-color:#006D77;color:#006D77;}
+.share-action-btn{flex:1;min-width:120px;padding:12px 16px;border:none;border-radius:12px;
+  cursor:pointer;font-size:14px;font-weight:800;font-family:var(--font);
+  display:flex;align-items:center;justify-content:center;gap:8px;}
+.share-link-box{background:#f8fffe;border:1.5px solid #E0ECEE;border-radius:10px;
+  padding:10px 14px;font-size:11px;color:#006D77;word-break:break-all;
+  font-family:monospace;margin-top:10px;max-height:80px;overflow:auto;}
+@media print{
+  #app-header,.nav-bar,#share-modal-outer,#frl-modal,#exp-modal,.overlay,#toast{display:none!important;}
+  #print-area{display:block!important;}
+  body{background:#fff;}
+}
+#print-area{display:none;}
+
+.export-template-card{display:flex;align-items:center;gap:14px;padding:14px 16px;
+  border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;
+  background:#fff;}
+.export-template-card:hover{border-color:var(--teal);background:var(--teal-lt);}
+
+/* Monthly enrollment */
+.month-picker-wrap{display:flex;flex-direction:column;gap:6px;}
+.month-pill-row{display:flex;flex-wrap:wrap;gap:6px;}
+.month-pill{padding:7px 13px;border:2px solid var(--border);border-radius:10px;cursor:pointer;
+  font-size:12px;font-weight:600;color:#888;transition:all .2s;user-select:none;font-family:var(--font);}
+.month-pill.on{background:var(--purple-lt);border-color:#8E44AD;color:#8E44AD;}
+.month-pill.used{background:#f5f5f5;color:#ccc;cursor:not-allowed;text-decoration:line-through;border-color:#eee;}
+.monthly-date-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+
+/* Sortable column headers */
+.th-sort { cursor:pointer; user-select:none; white-space:nowrap; }
+.th-sort:hover { background:#005a61; }
+.sort-icon { margin-left:4px; font-size:10px; opacity:.7; }
+.th-sort.sort-asc .sort-icon::after  { content:'▲'; }
+.th-sort.sort-desc .sort-icon::after { content:'▼'; }
+.th-sort:not(.sort-asc):not(.sort-desc) .sort-icon::after { content:'⇅'; opacity:.4; }
+
+/* SYNC MODAL */
+.sync-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);
+  backdrop-filter:blur(4px);z-index:300;align-items:center;justify-content:center;padding:16px;}
+.sync-overlay.open{display:flex;}
+.sync-modal{background:#fff;border-radius:22px;width:100%;max-width:500px;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;}
+.sync-hdr{background:linear-gradient(135deg,#1a73e8,#0d47a1);
+  padding:18px 22px;display:flex;align-items:center;justify-content:space-between;}
+.sync-hdr-title{color:#fff;font-size:16px;font-weight:800;}
+.sync-body{padding:20px 22px;}
+.sync-section{margin-bottom:18px;}
+.sync-section-title{font-size:13px;font-weight:800;color:#1a1a2e;
+  margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;
+  display:flex;align-items:center;gap:8px;}
+.sync-btn{width:100%;padding:12px 16px;border:none;border-radius:12px;
+  font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin-bottom:8px;transition:opacity .2s;}
+.sync-btn:disabled{opacity:.4;cursor:not-allowed;}
+.sync-btn-drive{background:#1a73e8;color:#fff;}
+.sync-btn-backup{background:#27ae60;color:#fff;}
+.sync-btn-restore{background:#f0f0f0;color:#1a1a2e;}
+.sync-btn-danger{background:#fde8e8;color:#e74c3c;}
+.sync-status{font-size:12px;padding:8px 12px;border-radius:8px;margin-top:6px;
+  display:none;font-weight:600;}
+.sync-status.ok{background:#eafaf1;color:#27ae60;display:block;}
+.sync-status.err{background:#fde8e8;color:#e74c3c;display:block;}
+.sync-status.loading{background:#e8f4f5;color:#006D77;display:block;}
+.drive-setup{background:#fff3cd;border:1.5px solid #FFC300;border-radius:10px;
+  padding:12px 14px;font-size:12px;color:#856404;margin-bottom:14px;line-height:1.6;}
+.drive-setup a{color:#1a73e8;font-weight:700;}
+.client-id-wrap{display:flex;gap:8px;margin-top:8px;}
+.client-id-input{flex:1;padding:9px 12px;border:2px solid #E0ECEE;border-radius:8px;
+  font-size:12px;font-family:monospace;outline:none;}
+.client-id-input:focus{border-color:#1a73e8;}
+
+/* PIN LOCK SCREEN */
+#pin-lock {
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(135deg,#006D77 0%,#004d55 100%);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+}
+.pin-box {
+  background:rgba(255,255,255,.08);backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:28px;padding:40px 36px;
+  display:flex;flex-direction:column;align-items:center;gap:24px;
+  width:100%;max-width:340px;box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.pin-logo  { font-size:48px; }
+.pin-title { color:#fff;font-size:22px;font-weight:900;letter-spacing:1px; }
+.pin-sub   { color:rgba(255,255,255,.6);font-size:13px;margin-top:-16px; }
+.pin-dots  {
+  display:flex;gap:14px;
+}
+.pin-dot {
+  width:16px;height:16px;border-radius:50%;
+  background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);
+  transition:all .15s;
+}
+.pin-dot.filled { background:#FFC300;border-color:#FFC300; }
+.pin-pad {
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;
+}
+.pin-key {
+  padding:16px;border:none;border-radius:16px;
+  background:rgba(255,255,255,.12);color:#fff;
+  font-size:22px;font-weight:700;cursor:pointer;
+  font-family:-apple-system,'SF Pro Display','Segoe UI',sans-serif;
+  transition:background .1s,transform .1s;
+  border:1px solid rgba(255,255,255,.1);
+  -webkit-tap-highlight-color:transparent;
+}
+.pin-key:active { background:rgba(255,255,255,.25);transform:scale(.95); }
+.pin-key.del    { font-size:18px; }
+.pin-key.empty  { background:transparent;border-color:transparent;cursor:default; }
+.pin-error {
+  color:#FFC300;font-size:13px;font-weight:700;
+  min-height:18px;text-align:center;
+  animation:pin-shake .3s ease;
+}
+@keyframes pin-shake {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-6px)}
+  80%{transform:translateX(6px)}
+}
+.pin-footer { color:rgba(255,255,255,.3);font-size:11px;margin-top:-8px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+
+<!-- PIN LOCK SCREEN -->
+<div id="pin-lock">
+  <div class="pin-box">
+    <div class="pin-logo">&#x26FA;</div>
+    <div class="pin-title">LIFE SCHOOL CAMPS</div>
+    <div class="pin-sub">Enter PIN to continue</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key empty"></button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key del" onclick="pinDel()">&#x232B;</button>
+    </div>
+    <div class="pin-footer">Life School Camps &mdash; Admin Only</div>
+  </div>
+</div>
+
+<div id="app-header">
+  <div class="hdr-inner">
+    <div class="logo-wrap">
+      <span class="logo-icon">&#x26FA;</span>
+      <div>
+        <div class="logo-title">LIFE SCHOOL CAMPS</div>
+        <div class="logo-sub">Enrollment Management System</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="hdr-btn" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="openSyncModal()">&#x2601;&#xFE0F; Sync</button>
+    <button class="hdr-btn" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.3)" onclick="openShareModal()">&#x1F517; Share</button>
+    <button class="hdr-btn" onclick="openForm()">&#xFF0B; Register</button>
+  </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-bar">
+  <button class="nav-btn active"  onclick="switchTab('dash10')">&#x1F4CA; 10th</button>
+  <button class="nav-btn"         onclick="switchTab('dashsh')">&#x1F4CA; Shorouk</button>
+  <button class="nav-btn"         onclick="switchTab('juniors')">&#x1F476; Juniors</button>
+  <button class="nav-btn"         onclick="switchTab('seniors')">&#x1F466; Seniors</button>
+  <button class="nav-btn"         onclick="switchTab('shorouk')">&#x1F3E1; Shorouk</button>
+  <button class="nav-btn"         onclick="switchTab('weeks')">&#x1F5D3; Weeks</button>
+  <button class="nav-btn"         onclick="switchTab('freelancers')">&#x1F464; Staff</button>
+  <button class="nav-btn"         onclick="switchTab('expenses')">&#x1F4B8; Expenses</button>
+  <button class="nav-btn"         onclick="switchTab('finances')">&#x1F4B0; Finances</button>
+  <button class="nav-btn"         onclick="doExport()">&#x2B07; Excel</button>
+</div>
+
+<!-- VIEWS -->
+
+<!-- DASHBOARD 10TH -->
+<div id="view-dash10" class="view active">
+  <div style="background:linear-gradient(135deg,var(--teal),var(--teal-mid));border-radius:14px;padding:14px 18px;margin-bottom:14px;color:#fff;font-size:15px;font-weight:800;">
+    &#x1F3D5; 10th Camp Dashboard
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#006D77"><div class="kpi-lbl">Total Revenue (10th)</div><div class="kpi-val" id="k10-rev">0 <span class="kpi-unit">EGP</span></div></div>
+    <div class="kpi-card" style="--accent:#FFC300"><div class="kpi-lbl">Total Children</div><div class="kpi-val" id="k10-total">0</div></div>
+    <div class="kpi-card" style="--accent:#4AABB5"><div class="kpi-lbl">Juniors (10th)</div><div class="kpi-val" id="k10-j">0</div></div>
+    <div class="kpi-card" style="--accent:#E67E22"><div class="kpi-lbl">Seniors (10th)</div><div class="kpi-val" id="k10-s">0</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">&#x1F4C8; Weekly Revenue — 10th Camp</div>
+    <div class="bar-chart-wrap"><div class="bar-chart" id="bar10"></div></div>
+    <div class="best-banner" id="best10" style="display:none"></div>
+  </div>
+  <div class="card aged-alert" id="aged10-card" style="display:none">
+    <div class="card-title" style="padding-bottom:10px">&#x26A0;&#xFE0F; Children Over Age 12 (10th)</div>
+    <div class="aged-list" id="aged10-list"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD SHOROUK -->
+<div id="view-dashsh" class="view">
+  <div style="background:linear-gradient(135deg,#8E44AD,#A569BD);border-radius:14px;padding:14px 18px;margin-bottom:14px;color:#fff;font-size:15px;font-weight:800;">
+    &#x1F3E1; Shorouk Camp Dashboard
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card" style="--accent:#8E44AD"><div class="kpi-lbl">Total Revenue (Shorouk)</div><div class="kpi-val" id="ksh-rev">0 <span class="kpi-unit">EGP</span></div></div>
+    <div class="kpi-card" style="--accent:#FFC300"><div class="kpi-lbl">Total Children</div><div class="kpi-val" id="ksh-total">0</div></div>
+    <div class="kpi-card" style="--accent:#A569BD"><div class="kpi-lbl">Juniors (Shorouk)</div><div class="kpi-val" id="ksh-j">0</div></div>
+    <div class="kpi-card" style="--accent:#D7BDE2"><div class="kpi-lbl">Seniors (Shorouk)</div><div class="kpi-val" id="ksh-s">0</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">&#x1F4C8; Weekly Revenue — Shorouk Camp</div>
+    <div class="bar-chart-wrap"><div class="bar-chart" id="barsh"></div></div>
+    <div class="best-banner" id="bestsh" style="display:none"></div>
+  </div>
+  <div class="card aged-alert" id="agedsh-card" style="display:none">
+    <div class="card-title" style="padding-bottom:10px">&#x26A0;&#xFE0F; Children Over Age 12 (Shorouk)</div>
+    <div class="aged-list" id="agedsh-list"></div>
+  </div>
+</div>
+
+<!-- JUNIORS -->
+<div id="view-juniors" class="view">
+  <div class="search-bar">
+    <div class="group-badge" id="j-badge">Juniors — 0</div>
+    <input class="search-input" id="j-search" placeholder="&#x1F50D; Search name or phone..." oninput="renderList('juniors')">
+  </div>
+  <div id="j-table"></div>
+</div>
+
+<!-- SENIORS -->
+<div id="view-seniors" class="view">
+  <div class="search-bar">
+    <div class="group-badge" id="s-badge">Seniors — 0</div>
+    <input class="search-input" id="s-search" placeholder="&#x1F50D; Search name or phone..." oninput="renderList('seniors')">
+  </div>
+  <div id="s-table"></div>
+</div>
+
+<!-- SHOROUK LIST -->
+<div id="view-shorouk" class="view">
+  <div class="search-bar">
+    <div class="group-badge" style="background:linear-gradient(135deg,#8E44AD,#A569BD)" id="sh-badge">Shorouk — 0</div>
+    <input class="search-input" id="sh-search" placeholder="&#x1F50D; Search name or phone..." oninput="renderList('shorouk')">
+  </div>
+  <div id="sh-table"></div>
+</div>
+
+<!-- WEEKS -->
+<div id="view-weeks" class="view">
+  <div class="month-tabs" id="month-tabs"></div>
+  <div id="weeks-content"></div>
+</div>
+
+
+<!-- FREELANCERS -->
+<div id="view-freelancers" class="view">
+  <div class="month-tabs" style="flex-wrap:wrap;gap:6px" id="frl-week-tabs"></div>
+  <div id="frl-table-wrap"></div>
+</div>
+
+<!-- EXPENSES -->
+<div id="view-expenses" class="view">
+  <div class="month-tabs" id="exp-section-tabs"></div>
+  <div id="exp-content"></div>
+</div>
+
+<!-- FINANCES -->
+<div id="view-finances" class="view">
+  <div id="fin-content"></div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modal-title">Register New Child</div>
+      <button class="close-btn" onclick="closeForm()">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-ftr">
+      <button class="btn-cancel" onclick="closeForm()">Cancel</button>
+      <button class="btn-save"   onclick="submitForm()">&#x2705; Register Child</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- FREELANCER MODAL -->
+<div class="overlay" id="frl-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="frl-modal-title">Add Freelancer</div>
+      <button class="close-btn" onclick="document.getElementById('frl-modal').classList.remove('open')">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="frl-modal-body"></div>
+    <div class="modal-ftr">
+      <button class="btn-cancel" onclick="document.getElementById('frl-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-save" onclick="saveFrlModal()">&#x2705; Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPENSE MODAL -->
+<div class="overlay" id="exp-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="exp-modal-title">Add Expense</div>
+      <button class="close-btn" onclick="document.getElementById('exp-modal').classList.remove('open')">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="exp-modal-body"></div>
+    <div class="modal-ftr">
+      <button class="btn-cancel" onclick="document.getElementById('exp-modal').classList.remove('open')">Cancel</button>
+      <button class="btn-save" onclick="saveExpModal()">&#x2705; Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+
+// ── Minimal inline XLSX writer (no CDN needed, works offline) ─────────────
+const XLSX = (() => {
+  // Utility: string to UTF-8 bytes, then to base64
+  function strToBase64(str) {
+    const bytes = [];
+    for (let i = 0; i < str.length; i++) {
+      const c = str.charCodeAt(i);
+      if (c < 128) bytes.push(c);
+      else if (c < 2048) { bytes.push(192|(c>>6)); bytes.push(128|(c&63)); }
+      else { bytes.push(224|(c>>12)); bytes.push(128|((c>>6)&63)); bytes.push(128|(c&63)); }
+    }
+    let b = '';
+    for (const byte of bytes) b += String.fromCharCode(byte);
+    return btoa(b);
+  }
+
+  // Escape XML special chars
+  function esc(v) {
+    return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // Convert col index (0-based) to Excel letter (A, B, ... Z, AA...)
+  function colLetter(n) {
+    let s = '';
+    n++;
+    while (n > 0) { n--; s = String.fromCharCode(65 + (n % 26)) + s; n = Math.floor(n / 26); }
+    return s;
+  }
+
+  // Build worksheet XML from array of arrays
+  function buildSheetXML(aoa) {
+    const sharedStrings = [];
+    const ssMap = {};
+    function ssIdx(str) {
+      const s = String(str);
+      if (ssMap[s] === undefined) { ssMap[s] = sharedStrings.length; sharedStrings.push(s); }
+      return ssMap[s];
+    }
+
+    let rowsXml = '';
+    for (let r = 0; r < aoa.length; r++) {
+      const row = aoa[r];
+      if (!row) continue;
+      let cellsXml = '';
+      for (let c = 0; c < row.length; c++) {
+        const val = row[c];
+        if (val === null || val === undefined || val === '') continue;
+        const ref = colLetter(c) + (r + 1);
+        if (typeof val === 'number') {
+          cellsXml += `<c r="${ref}"><v>${val}</v></c>`;
+        } else {
+          const idx = ssIdx(val);
+          cellsXml += `<c r="${ref}" t="s"><v>${idx}</v></c>`;
+        }
+      }
+      if (cellsXml) rowsXml += `<row r="${r+1}">${cellsXml}</row>`;
+    }
+
+    return { sheetXml: `<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${rowsXml}</sheetData></worksheet>`, sharedStrings };
+  }
+
+  // Tiny ZIP builder (store, no compression)
+  function buildZip(files) {
+    // files = [{name, data (string)}]
+    const toBytes = s => new TextEncoder().encode(s);
+    const u32le = n => { const b = new Uint8Array(4); new DataView(b.buffer).setUint32(0,n,true); return b; };
+    const u16le = n => { const b = new Uint8Array(2); new DataView(b.buffer).setUint16(0,n,true); return b; };
+
+    // CRC32 table
+    const crcTable = new Uint32Array(256);
+    for (let i=0;i<256;i++){let c=i;for(let j=0;j<8;j++)c=c&1?0xEDB88320^(c>>>1):c>>>1;crcTable[i]=c;}
+    const crc32 = bytes => {
+      let c = 0xFFFFFFFF;
+      for (const b of bytes) c = crcTable[(c^b)&0xFF]^(c>>>8);
+      return (c^0xFFFFFFFF)>>>0;
+    };
+
+    const concat = (...arrays) => {
+      const total = arrays.reduce((s,a)=>s+a.length,0);
+      const out = new Uint8Array(total); let off=0;
+      for (const a of arrays){out.set(a,off);off+=a.length;}
+      return out;
+    };
+
+    const localHeaders = [];
+    const centralHeaders = [];
+    let offset = 0;
+
+    for (const {name, data} of files) {
+      const nameBytes  = new TextEncoder().encode(name);
+      const dataBytes  = toBytes(data);
+      const crc        = crc32(dataBytes);
+      const size       = dataBytes.length;
+
+      const local = concat(
+        new Uint8Array([0x50,0x4B,0x03,0x04]), // sig
+        new Uint8Array([0x14,0x00]),            // version needed
+        new Uint8Array([0x00,0x00]),            // flags
+        new Uint8Array([0x00,0x00]),            // compression: store
+        new Uint8Array([0x00,0x00,0x00,0x00]), // mod time/date
+        u32le(crc), u32le(size), u32le(size),
+        u16le(nameBytes.length), u16le(0),
+        nameBytes, dataBytes
+      );
+
+      const central = concat(
+        new Uint8Array([0x50,0x4B,0x01,0x02]),
+        new Uint8Array([0x14,0x00,0x14,0x00]),
+        new Uint8Array([0x00,0x00,0x00,0x00]),
+        new Uint8Array([0x00,0x00,0x00,0x00]),
+        u32le(crc), u32le(size), u32le(size),
+        u16le(nameBytes.length), u16le(0), u16le(0),
+        u16le(0), u16le(0), u32le(0),
+        u32le(offset),
+        nameBytes
+      );
+
+      localHeaders.push(local);
+      centralHeaders.push(central);
+      offset += local.length;
+    }
+
+    const centralData  = concat(...centralHeaders);
+    const centralSize  = centralData.length;
+    const centralStart = offset;
+    const eocd = concat(
+      new Uint8Array([0x50,0x4B,0x05,0x06]),
+      new Uint8Array([0x00,0x00,0x00,0x00]),
+      u16le(files.length), u16le(files.length),
+      u32le(centralSize), u32le(centralStart),
+      new Uint8Array([0x00,0x00])
+    );
+
+    const allParts = [...localHeaders, centralData, eocd];
+    const zipBytes = concat(...allParts);
+
+    // Safe base64 from Uint8Array — works on iOS Safari for large files
+    // Process in chunks to avoid call stack limits
+    const CHUNK = 0x8000;
+    let b64 = '';
+    for (let i = 0; i < zipBytes.length; i += CHUNK) {
+      b64 += String.fromCharCode.apply(null, zipBytes.subarray(i, i + CHUNK));
+    }
+    return btoa(b64);
+  }
+
+  // ── Public API ────────────────────────────────────────────────────────────
+  const book_new  = () => ({ sheets: [], names: [] });
+  const aoa_to_sheet = aoa => aoa;
+
+  function book_append_sheet(wb, ws, name) {
+    wb.sheets.push(ws); wb.names.push(name);
+  }
+
+  function write(wb) {
+    // Build shared strings across all sheets
+    const allStrings = [];
+    const ssMap = {};
+    function ssIdx(str) {
+      const s = String(str);
+      if (ssMap[s] === undefined) { ssMap[s] = allStrings.length; allStrings.push(s); }
+      return ssMap[s];
+    }
+
+    const sheetXmls = wb.sheets.map((aoa, si) => {
+      let rowsXml = '';
+      for (let r = 0; r < aoa.length; r++) {
+        const row = aoa[r]; if (!row) continue;
+        let cellsXml = '';
+        for (let c = 0; c < row.length; c++) {
+          const val = row[c];
+          if (val === null || val === undefined || val === '') continue;
+          const ref = colLetter(c) + (r + 1);
+          if (typeof val === 'number') {
+            cellsXml += `<c r="${ref}"><v>${val}</v></c>`;
+          } else {
+            cellsXml += `<c r="${ref}" t="s"><v>${ssIdx(val)}</v></c>`;
+          }
+        }
+        if (cellsXml) rowsXml += `<row r="${r+1}">${cellsXml}</row>`;
+      }
+      return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>${rowsXml}</sheetData></worksheet>`;
+    });
+
+    const ssXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${allStrings.length}" uniqueCount="${allStrings.length}">${allStrings.map(s=>`<si><t xml:space="preserve">${esc(s)}</t></si>`).join('')}</sst>`;
+
+    const sheetRels  = wb.names.map((_,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('');
+    const sheetRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheetRels}<Relationship Id="rId${wb.names.length+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>`;
+
+    const sheetsTag  = wb.names.map((n,i)=>`<sheet name="${esc(n)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('');
+    const workbookXml= `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheetsTag}</sheets></workbook>`;
+
+    const contentTypes = [
+      `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">`,
+      `<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>`,
+      `<Default Extension="xml" ContentType="application/xml"/>`,
+      `<Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>`,
+      ...wb.names.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`),
+      `<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>`,
+      `</Types>`
+    ].join('');
+
+    const rootRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+
+    const files = [
+      { name: '[Content_Types].xml',   data: contentTypes },
+      { name: '_rels/.rels',           data: rootRels },
+      { name: 'xl/workbook.xml',       data: workbookXml },
+      { name: 'xl/_rels/workbook.xml.rels', data: sheetRelsXml },
+      { name: 'xl/sharedStrings.xml',  data: ssXml },
+      ...sheetXmls.map((xml,i) => ({ name: `xl/worksheets/sheet${i+1}.xml`, data: xml })),
+    ];
+
+    return buildZip(files);
+  }
+
+  function writeFile(wb, filename) {
+    const b64  = write(wb);
+    const mime = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    try {
+      // Convert base64 → Uint8Array → Blob for reliable Safari/iOS download
+      const bin = atob(b64);
+      const buf = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+      const blob = new Blob([buf], {type: mime});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(url); document.body.removeChild(a); }, 1000);
+    } catch(e) {
+      // Fallback: plain data URI
+      const a = document.createElement('a');
+      a.href = `data:${mime};base64,${b64}`;
+      a.download = filename;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+  }
+
+  return { book_new, aoa_to_sheet, book_append_sheet, write, writeFile };
+})();
+
+</script>
+<script>
+
+// ═══════════════════ DATA & PERSISTENCE ═══════════════════
+const STORE_KEY = 'lsc_data_v2';
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      // migrate old data that has no shorouk key
+      if (!d.shorouk) d.shorouk = [];
+      return d;
+    }
+  } catch(e) {}
+  return { juniors:[], seniors:[], shorouk:[], freelancers:{}, expenses:{'10th':{},'Shorouk':{},'General':[]}, finances:{'10th':{},'Shorouk':{}} };
+}
+function saveData() { localStorage.setItem(STORE_KEY, JSON.stringify(DB)); }
+let DB = loadData();
+
+// ═══════════════════ WEEKS ═══════════════════
+const WEEKS = (()=>{
+  const fmt = d=>`${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;
+  const w=[{index:0,label:'W1: 01/06-04/06',days:4,start:new Date(2026,5,1),end:new Date(2026,5,4)}];
+  for(let i=0;i<12;i++){
+    const ws=new Date(2026,5,7+i*7),we=new Date(ws);we.setDate(we.getDate()+4);
+    w.push({index:i+1,label:`W${i+2}: ${fmt(ws)}-${fmt(we)}`,days:5,start:ws,end:we});
+  }
+  return w;
+})();
+
+const MONTH_GROUPS={'June':[0,1,2,3],'July':[4,5,6,7],'August':[8,9,10,11,12]};
+let activeMonth='June';
+
+// ═══════════════════ UTILS ═══════════════════
+function calcAge(dob){
+  if(!dob)return null;
+  const t=new Date(),b=new Date(dob);
+  let a=t.getFullYear()-b.getFullYear();
+  const m=t.getMonth()-b.getMonth();
+  if(m<0||(m===0&&t.getDate()<b.getDate()))a--;
+  return a;
+}
+function fmtN(n){return Number(Math.round(n)).toLocaleString('en-US');}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+function similarity(a,b){
+  a=a.toLowerCase().trim();b=b.toLowerCase().trim();
+  if(a===b)return 1;
+  if(a.includes(b)||b.includes(a))return 0.85;
+  let common=0;
+  const sh=a.length<b.length?a:b,lo=a.length<b.length?b:a;
+  for(const ch of sh)if(lo.includes(ch))common++;
+  return common/lo.length;
+}
+function matchScore(child,name,dob,phone){
+  let score=0;
+  const ns=similarity(child.name,name);
+  if(ns>0.6)score+=ns*50;
+  if(dob&&child.dob===dob)score+=30;
+  if(phone&&(child.phone===phone||child.phone2===phone))score+=20;
+  return score;
+}
+
+// Returns all children with a .group and .camp field
+function getAllChildren(){
+  return[
+    ...DB.juniors.map(c=>({...c,group:'Juniors',camp:'10th'})),
+    ...DB.seniors.map(c=>({...c,group:'Seniors',camp:'10th'})),
+    ...DB.shorouk.map(c=>({...c,group:c.subGroup||'Juniors',camp:'Shorouk'})),
+  ];
+}
+function get10th(){
+  return[
+    ...DB.juniors.map(c=>({...c,group:'Juniors',camp:'10th'})),
+    ...DB.seniors.map(c=>({...c,group:'Seniors',camp:'10th'})),
+  ];
+}
+function getShorouk(){
+  return DB.shorouk.map(c=>({...c,group:c.subGroup||'Juniors',camp:'Shorouk'}));
+}
+
+// ═══════════════════ TABS ═══════════════════
+// Sort state per list: { col, dir }  col = 'name'|'age'|'phone'|'type'|'weeks'|'paid'
+const sortState = { juniors:{col:'name',dir:'asc'}, seniors:{col:'name',dir:'asc'}, shorouk:{col:'name',dir:'asc'} };
+
+function setSort(grp, col) {
+  if(sortState[grp].col === col) {
+    sortState[grp].dir = sortState[grp].dir === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortState[grp].col = col;
+    sortState[grp].dir = 'asc';
+  }
+  renderList(grp);
+}
+
+function sortChildren(children, grp) {
+  const { col, dir } = sortState[grp];
+  const mult = dir === 'asc' ? 1 : -1;
+  return [...children].sort((a, b) => {
+    let av, bv;
+    if (col === 'name') {
+      av = (a.name||'').toLowerCase();
+      bv = (b.name||'').toLowerCase();
+      return mult * av.localeCompare(bv, 'ar');
+    }
+    if (col === 'age') {
+      av = calcAge(a.dob) ?? 999;
+      bv = calcAge(b.dob) ?? 999;
+    } else if (col === 'phone') {
+      av = a.phone||'';
+      bv = b.phone||'';
+    } else if (col === 'type') {
+      av = a.subType||'';
+      bv = b.subType||'';
+    } else if (col === 'weeks') {
+      av = a.weekStart ?? 999;
+      bv = b.weekStart ?? 999;
+    } else if (col === 'paid') {
+      av = a.totalPaid||0;
+      bv = b.totalPaid||0;
+    } else {
+      av = bv = 0;
+    }
+    if (av < bv) return -mult;
+    if (av > bv) return mult;
+    return 0;
+  });
+}
+
+function thClass(grp, col) {
+  const s = sortState[grp];
+  return 'th-sort' + (s.col===col ? ' sort-'+s.dir : '');
+}
+
+function switchTab(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.classList.toggle('active',(b.getAttribute('onclick')||'').includes("'"+id+"'"));
+  });
+  const v=document.getElementById('view-'+id);
+  if(v)v.classList.add('active');
+  if(id==='dash10')  renderDash10();
+  if(id==='dashsh')  renderDashSh();
+  if(id==='juniors') renderList('juniors');
+  if(id==='seniors') renderList('seniors');
+  if(id==='shorouk') renderList('shorouk');
+  if(id==='weeks')     renderWeeks();
+  if(id==='freelancers') renderFreelancers();
+  if(id==='expenses')    renderExpenses();
+  if(id==='finances')    renderFinances();
+}
+
+// ═══════════════════ DASHBOARD BUILDER ═══════════════════
+function buildDashboard(children, ids, barColor1, barColor2){
+  const totalRev=children.reduce((s,c)=>s+c.totalPaid,0);
+  const jCount=children.filter(c=>c.group==='Juniors').length;
+  const sCount=children.filter(c=>c.group==='Seniors').length;
+
+  document.getElementById(ids.rev).innerHTML=`${fmtN(totalRev)} <span class="kpi-unit">EGP</span>`;
+  document.getElementById(ids.total).textContent=children.length;
+  document.getElementById(ids.j).textContent=jCount;
+  document.getElementById(ids.s).textContent=sCount;
+
+  const weekData=WEEKS.map((_,wi)=>{
+    // count: weekly/daily children enrolled this week + monthly children whose period covers this week
+    const inW=children.filter(c=>{
+      if(c.subType==='monthly'){
+        const periods=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd}];
+        return periods.some(p=>weekOverlapsMonthPeriod(wi,p.start,p.end));
+      }
+      return c.weekStart!=null&&c.weekEnd!=null&&wi>=c.weekStart&&wi<=c.weekEnd;
+    });
+    const rev=inW.reduce((s,c)=>{
+      if(c.subType==='monthly'){
+        const periods=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd,paid:c.totalPaid}];
+        let contrib=0;
+        periods.forEach(p=>{ if(weekOverlapsMonthPeriod(wi,p.start,p.end)) contrib+=(p.paid||0)/Math.max(monthlyWeeksCount(p.start,p.end),1); });
+        return s+contrib;
+      }
+      if(c.subType==='daily')return s+c.totalPaid;
+      const nw=c.weekEnd-c.weekStart+1;return s+(nw>0?c.totalPaid/nw:0);
+    },0);
+    return{rev:Math.round(rev),count:inW.length};
+  });
+
+  const maxRev=Math.max(...weekData.map(w=>w.rev),1);
+  const bestIdx=weekData.reduce((bi,w,i)=>w.rev>weekData[bi].rev?i:bi,0);
+
+  document.getElementById(ids.bar).innerHTML=weekData.map((w,i)=>`
+    <div class="bar-col">
+      <div class="bar-rev">${w.rev>0?fmtN(w.rev):''}</div>
+      <div class="bar-body" style="height:${Math.max(w.rev/maxRev*120,4)}px;
+        background:${i===bestIdx?'linear-gradient(180deg,#FFC300,#E67E22)':('linear-gradient(180deg,'+barColor1+','+barColor2+')')};
+        box-shadow:${i===bestIdx?'0 4px 16px #FFC30066':'0 4px 10px rgba(0,0,0,.15)'}">
+      </div>
+      <div class="bar-lbl">W${i+1}</div>
+      <div class="bar-cnt">${w.count}</div>
+    </div>
+  `).join('');
+
+  const banner=document.getElementById(ids.best);
+  if(weekData[bestIdx].rev>0){
+    banner.style.display='block';
+    banner.innerHTML=`&#x1F3C6; Best week: <strong>${WEEKS[bestIdx].label}</strong> - ${fmtN(weekData[bestIdx].rev)} EGP`;
+  }else banner.style.display='none';
+
+  const aged=children.filter(c=>{const a=calcAge(c.dob);return a!==null&&a>12;});
+  const agedCard=document.getElementById(ids.agedCard);
+  if(aged.length>0){
+    agedCard.style.display='block';
+    document.getElementById(ids.agedList).innerHTML=aged.map(c=>
+      `<span class="aged-badge">${c.name} - ${calcAge(c.dob)} yrs (${c.group})</span>`
+    ).join('');
+  }else agedCard.style.display='none';
+}
+
+function renderDash10(){
+  buildDashboard(get10th(),
+    {rev:'k10-rev',total:'k10-total',j:'k10-j',s:'k10-s',
+     bar:'bar10',best:'best10',agedCard:'aged10-card',agedList:'aged10-list'},
+    '#4AABB5','#006D77');
+}
+function renderDashSh(){
+  buildDashboard(getShorouk(),
+    {rev:'ksh-rev',total:'ksh-total',j:'ksh-j',s:'ksh-s',
+     bar:'barsh',best:'bestsh',agedCard:'agedsh-card',agedList:'agedsh-list'},
+    '#A569BD','#8E44AD');
+}
+
+// ═══════════════════ CHILDREN LIST ═══════════════════
+function renderList(grp){
+  const children=DB[grp];
+  const isSh=grp==='shorouk';
+  const isJ=grp==='juniors';
+  const searchId=isSh?'sh-search':isJ?'j-search':'s-search';
+  const badgeId=isSh?'sh-badge':isJ?'j-badge':'s-badge';
+  const tableId=isSh?'sh-table':isJ?'j-table':'s-table';
+  const q=(document.getElementById(searchId)?.value||'').toLowerCase();
+
+  const filtered=sortChildren(
+    children.filter(c=>
+      c.name.toLowerCase().includes(q)||
+      (c.phone&&c.phone.includes(q))||
+      (c.phone2&&c.phone2.includes(q))
+    ), grp
+  );
+
+  const labelMap={juniors:'Juniors (10th)',seniors:'Seniors (10th)',shorouk:'Shorouk Camp'};
+  document.getElementById(badgeId).textContent=`${labelMap[grp]} - ${children.length} children`;
+
+  const cont=document.getElementById(tableId);
+  if(filtered.length===0){
+    cont.innerHTML=`<div class="empty-state">${children.length===0?'No children registered yet':'No results found'}</div>`;
+    return;
+  }
+
+  const maxAge=12,minAge=4;
+  // Build sort-indicator helper
+  const th=(label,col)=>`<th class="${thClass(grp,col)}" onclick="setSort('${grp}','${col}')">${label}<span class="sort-icon"></span></th>`;
+
+  cont.innerHTML=`<div class="tbl-wrap"><table>
+    <thead><tr>
+      ${th('Name','name')}
+      ${th('Age','age')}
+      ${th('Phone','phone')}
+      ${isSh?'<th>Group</th>':''}
+      ${th('Type','type')}
+      ${th('Weeks','weeks')}
+      ${th('Total Paid','paid')}
+      <th>/Week</th><th>Status</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+      ${filtered.map((c,idx)=>{
+        const age=calcAge(c.dob);
+        const nw=(c.weekEnd!=null&&c.weekStart!=null)?c.weekEnd-c.weekStart+1:0;
+        const cpw=nw>0?Math.round(c.totalPaid/nw):0;
+        const ok=age!==null&&age>=minAge&&age<=maxAge;
+        const bad=age!==null&&age>maxAge;
+        const ageBg=bad?'#fde8e8':ok?'#d4f5ed':'#fff3cd';
+        const ageCl=bad?'var(--red)':ok?'var(--teal)':'var(--orange)';
+        const st=bad?'<span class="status-bad">Over 12</span>':ok?'<span class="status-ok">OK</span>':'<span class="status-warn">Check age</span>';
+        return `<tr>
+          <td class="td-name">${c.name}</td>
+          <td><span class="age-pill" style="background:${ageBg};color:${ageCl}">${age??'-'} yrs</span></td>
+          <td style="font-size:11px">${c.phone}${c.phone2?`<br><span style="color:#aaa">${c.phone2}</span>`:''}</td>
+          ${isSh?`<td><span style="font-size:11px;background:var(--purple-lt);color:var(--purple);padding:2px 8px;border-radius:10px;font-weight:700">${c.subGroup||'Juniors'}</span></td>`:''}
+          <td>${c.subType==='weekly'?'Weekly':c.subType==='monthly'?'<span style="color:#8E44AD;font-weight:700">Monthly</span>':'Daily'}</td>
+          <td>${c.subType==='monthly'
+              ? `<span style="font-size:11px;background:var(--purple-lt);color:#8E44AD;padding:2px 7px;border-radius:8px;font-weight:700">&#x1F4C5; ${(c.months||[]).length} month${(c.months||[]).length!==1?'s':''}</span>`
+              : c.weekStart!=null?`<span class="week-range">W${c.weekStart+1}&#x2192;W${(c.weekEnd??c.weekStart)+1}${nw>0?`<span class="nw-badge">${nw}w</span>`:''}</span>`:'-'
+            }</td>
+          <td style="font-weight:700;color:var(--green)">${fmtN(c.totalPaid)} EGP</td>
+          <td style="color:#888">${nw>0?fmtN(cpw)+' EGP':'-'}</td>
+          <td>${st}</td>
+          <td>
+            <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap">
+              <button class="edit-btn"  onclick="openEdit('${c.id}','${grp}')">Edit</button>
+              <button class="renew-btn" onclick="openRenewal('${c.id}','${grp}')">Renew</button>
+              <button class="del-btn"   onclick="deleteChild('${c.id}','${grp}')">Del</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody></table></div>`;
+}
+
+// ═══════════════════ WEEKS VIEW ═══════════════════
+function renderWeeks(){
+  document.getElementById('month-tabs').innerHTML=Object.keys(MONTH_GROUPS).map(m=>
+    `<button class="month-tab ${m===activeMonth?'active':''}" onclick="setMonth('${m}')">${m}</button>`
+  ).join('');
+
+  const all=getAllChildren();
+  document.getElementById('weeks-content').innerHTML=MONTH_GROUPS[activeMonth].map(wi=>{
+    const w=WEEKS[wi];
+    const inW=all.filter(c=>{
+      if(c.subType==='monthly'){
+        const periods=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd}];
+        return periods.some(p=>weekOverlapsMonthPeriod(wi,p.start,p.end));
+      }
+      return c.weekStart!=null&&c.weekEnd!=null&&wi>=c.weekStart&&wi<=c.weekEnd;
+    });
+    const jInW=inW.filter(c=>c.group==='Juniors'&&c.camp==='10th');
+    const sInW=inW.filter(c=>c.group==='Seniors'&&c.camp==='10th');
+    const shInW=inW.filter(c=>c.camp==='Shorouk');
+    const weekRev=g=>{
+      return g.reduce((s,c)=>{
+        if(c.subType==='daily')return s+c.totalPaid;
+        const nw=c.weekEnd-c.weekStart+1;return s+(nw>0?c.totalPaid/nw:0);
+      },0);
+    };
+    const rev=weekRev(inW);
+
+    const groupHtml=(list,color,label)=>`
+      <div class="week-group">
+        <div class="wg-hdr" style="background:${color}">${label} (${list.length})</div>
+        ${list.length===0?'<div class="wg-empty">None enrolled</div>':list.map(c=>{
+          let amt=0;
+          if(c.subType==='daily') amt=c.totalPaid;
+          else if(c.subType==='monthly'){
+            const periods=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd,paid:c.totalPaid}];
+            periods.forEach(p=>{ if(weekOverlapsMonthPeriod(wi,p.start,p.end)) amt+=(p.paid||0)/Math.max(monthlyWeeksCount(p.start,p.end),1); });
+            amt=Math.round(amt);
+          } else {
+            const nw=c.weekEnd-c.weekStart+1;
+            amt=nw>0?Math.round(c.totalPaid/nw):0;
+          }
+          return `<div class="wg-row"><span class="wg-name">${c.name}</span>
+            <span class="wg-type">${c.subType==='weekly'?'Weekly':'Daily'}</span>
+            <span class="wg-pay">${fmtN(amt)} EGP</span></div>`;
+        }).join('')}
+      </div>`;
+
+    return `<div class="week-card">
+      <div class="week-hdr">
+        <span class="wk-num">W${wi+1}</span>
+        <span class="wk-dates">${w.label.replace(`W${wi+1}: `,'')} ${w.days===4?'(4 days)':'(Sun-Thu)'}</span>
+        <span class="wk-stat">${inW.length} children</span>
+        <span class="wk-rev">${fmtN(rev)} EGP</span>
+      </div>
+      <div class="week-cols">
+        ${groupHtml(jInW,'#006D77','Juniors 10th')}
+        ${groupHtml(sInW,'#E67E22','Seniors 10th')}
+        ${groupHtml(shInW,'#8E44AD','Shorouk')}
+      </div>
+    </div>`;
+  }).join('');
+}
+function setMonth(m){activeMonth=m;renderWeeks();}
+
+// ═══════════════════ FORM STATE ═══════════════════
+let formMode='new',renewalId=null,renewalGrp=null;
+
+function openForm(){
+  formMode='new';renewalId=null;renewalGrp=null;
+  document.getElementById('modal-title').textContent='Register New Child';
+  document.querySelector('.btn-save').textContent='Register Child';
+  window._formGroup='Juniors';window._formType='weekly';window._formCamp='10th';
+  renderFormBody();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function openRenewal(id,grp){
+  formMode='renew';renewalId=id;renewalGrp=grp;
+  const c=DB[grp].find(x=>x.id===id);if(!c)return;
+  document.getElementById('modal-title').textContent='Renew: '+c.name;
+  document.querySelector('.btn-save').textContent='Renew Enrollment';
+  window._formType=c.subType||'weekly';
+  window._formCamp=grp==='shorouk'?'Shorouk':'10th';
+  window._formGroup=grp==='shorouk'?(c.subGroup||'Juniors'):(grp==='juniors'?'Juniors':'Seniors');
+  renderFormBody(c);
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function openEdit(id,grp){
+  formMode='edit';renewalId=id;renewalGrp=grp;
+  const c=DB[grp].find(x=>x.id===id);if(!c)return;
+  document.getElementById('modal-title').textContent='Edit: '+c.name;
+  document.querySelector('.btn-save').textContent='Save Changes';
+  window._formType=c.subType||'weekly';
+  window._formCamp=grp==='shorouk'?'Shorouk':'10th';
+  window._formGroup=grp==='shorouk'?(c.subGroup||'Juniors'):(grp==='juniors'?'Juniors':'Seniors');
+  renderFormBody(c);
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeForm(){document.getElementById('modal-overlay').classList.remove('open');}
+
+// ═══════════════════ FORM RENDER ═══════════════════
+function renderFormBody(existing){
+  const isRenew=formMode==='renew',isEdit=formMode==='edit';
+  const renewMin=(isRenew&&existing?.weekEnd!=null)?existing.weekEnd+1:0;
+  const defStart=isRenew?Math.min(renewMin,12):isEdit?(existing?.weekStart??0):0;
+  const defEnd=isEdit?(existing?.weekEnd??defStart):defStart;
+  const defType=existing?.subType||'weekly';
+
+  const availW=isRenew?WEEKS.filter((_,i)=>i>=renewMin):WEEKS;
+  const wOptsStart=availW.map(w=>{
+    const ri=WEEKS.indexOf(w);
+    return `<option value="${ri}"${ri===defStart?' selected':''}>${w.label}</option>`;
+  }).join('');
+  const wOptsEnd=availW.map(w=>{
+    const ri=WEEKS.indexOf(w);
+    return `<option value="${ri}"${ri===defEnd?' selected':''}>${w.label}</option>`;
+  }).join('');
+
+  const curCamp=window._formCamp||'10th';
+  const curGrp=window._formGroup||'Juniors';
+
+  // Camp selector pills: Juniors(10th), Seniors(10th), Shorouk
+  const campPills=`
+    <div class="form-field full">
+      <label>Camp &amp; Group *</label>
+      <div class="radio-grp">
+        <label class="radio-pill ${curCamp==='10th'&&curGrp==='Juniors'?'on':''}"
+          id="pill-10j" onclick="setCampGroup('10th','Juniors')">&#x1F476; Juniors (10th)</label>
+        <label class="radio-pill ${curCamp==='10th'&&curGrp==='Seniors'?'on':''}"
+          id="pill-10s" onclick="setCampGroup('10th','Seniors')">&#x1F466; Seniors (10th)</label>
+        <label class="radio-pill ${curCamp==='Shorouk'?'on':''}" style="${curCamp==='Shorouk'?'border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD':''}"
+          id="pill-sh" onclick="setCampGroup('Shorouk','Juniors')">&#x1F3E1; Shorouk</label>
+      </div>
+    </div>
+    <div class="form-field full" id="sh-subgroup-field" style="display:${curCamp==='Shorouk'?'flex':'none'}">
+      <label>Shorouk Group</label>
+      <div class="radio-grp">
+        <label class="radio-pill ${curCamp==='Shorouk'&&curGrp==='Juniors'?'on':''}"
+          id="pill-shj" onclick="setShGroup('Juniors')">&#x1F476; Juniors</label>
+        <label class="radio-pill ${curCamp==='Shorouk'&&curGrp==='Seniors'?'on':''}"
+          id="pill-shs" onclick="setShGroup('Seniors')">&#x1F466; Seniors</label>
+      </div>
+    </div>`;
+
+  const baseInfoFields=(isRenew||isEdit)?`
+    <div class="form-field full" style="background:var(--teal-lt);padding:12px;border-radius:10px">
+      <div style="font-size:13px;font-weight:700;color:var(--teal)">
+        ${existing.name} | DOB: ${existing.dob} | ${existing.phone}
+      </div>
+      <div style="font-size:12px;color:#888;margin-top:4px">
+        Total paid: ${fmtN(existing.totalPaid)} EGP
+        ${existing.subType==='monthly'
+          ? ' | Monthly: '+(existing.monthStart||'?')+' to '+(existing.monthEnd||'?')
+            +(isRenew?' | Add new month below':'')
+          : existing.weekStart!=null?' | W'+(existing.weekStart+1)+' to W'+((existing.weekEnd??existing.weekStart)+1)+(isRenew&&renewMin<=12?' | Renewing from W'+(renewMin+1):''):''
+        }
+      </div>
+      ${(isRenew&&existing.subType==='monthly'&&(existing.months||[]).length>0)?`
+      <div style="margin-top:8px;font-size:11px;color:#888;font-weight:600">Previous periods (greyed out):</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+        ${(existing.months||[]).map(m=>`<span style="background:#e8e8e8;color:#aaa;padding:2px 8px;border-radius:8px;font-size:11px;text-decoration:line-through">${m.start} to ${m.end}</span>`).join('')}
+      </div>`:''}
+    </div>
+  `:'';
+
+  const newPersonFields=(!isRenew&&!isEdit)?`
+    <div class="form-field">
+      <label>Child Name *</label>
+      <input class="inp" id="f-name" placeholder="Full name" oninput="onNameInput()">
+    </div>
+    <div class="form-field">
+      <label>Date of Birth *</label>
+      <input class="inp" id="f-dob" type="date" oninput="onDobInput()">
+      <div id="f-age-hint" class="inp-hint"></div>
+    </div>
+    <div class="form-field">
+      <label>Phone 1 *</label>
+      <input class="inp" id="f-phone" placeholder="01xxxxxxxxx">
+    </div>
+    <div class="form-field">
+      <label>Phone 2</label>
+      <input class="inp" id="f-phone2" placeholder="Optional">
+    </div>
+    <div class="form-field full" id="match-area"></div>
+  `:isEdit?`
+    <div class="form-field">
+      <label>Child Name *</label>
+      <input class="inp" id="f-name" value="${existing.name}">
+    </div>
+    <div class="form-field">
+      <label>Date of Birth *</label>
+      <input class="inp" id="f-dob" type="date" value="${existing.dob}" oninput="onDobInput()">
+      <div id="f-age-hint" class="inp-hint"></div>
+    </div>
+    <div class="form-field">
+      <label>Phone 1 *</label>
+      <input class="inp" id="f-phone" value="${existing.phone}">
+    </div>
+    <div class="form-field">
+      <label>Phone 2</label>
+      <input class="inp" id="f-phone2" value="${existing.phone2||''}">
+    </div>
+    <div class="form-field full">
+      <label>Total Payment (EGP)</label>
+      <input class="inp" id="f-pay-edit" type="number" value="${existing.totalPaid}" min="0" oninput="updatePayHintEdit()">
+      <div id="f-pay-edit-hint" class="inp-hint good"></div>
+    </div>
+  `:'';
+
+  document.getElementById('modal-body').innerHTML=`
+    <div class="form-grid">
+      ${baseInfoFields}
+      ${campPills}
+      ${newPersonFields}
+      <div class="form-field full">
+        <label>Enrollment Type *</label>
+        <div class="radio-grp">
+          <label class="radio-pill ${defType==='weekly'?'on':''}" id="pill-weekly"
+            onclick="setPill('type','weekly');toggleTypeFields()">Weekly</label>
+          <label class="radio-pill ${defType==='daily'?'on':''}" id="pill-daily"
+            onclick="setPill('type','daily');toggleTypeFields()">Daily</label>
+          <label class="radio-pill ${defType==='monthly'?'on':''}" id="pill-monthly"
+            onclick="setPill('type','monthly');toggleTypeFields()"
+            style="display:${curCamp==='Shorouk'?'inline-flex':'none'};${defType==='monthly'?'border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD':''}">Monthly</label>
+        </div>
+      </div>
+      <div id="field-weekly-dates">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-field" id="field-wstart">
+            <label>${isRenew?'New Start Week':'Start Week'}</label>
+            <select class="inp" id="f-wstart" onchange="onStartChange()">${wOptsStart}</select>
+          </div>
+          <div class="form-field" id="field-wend">
+            <label>${isRenew?'New End Week':'End Week'}</label>
+            <select class="inp" id="f-wend">${wOptsEnd}</select>
+            <div id="f-wend-hint" class="inp-hint good"></div>
+          </div>
+        </div>
+        <div class="form-field" id="field-days" style="display:none;margin-top:10px">
+          <label>Days in that week</label>
+          <input class="inp" id="f-days" type="number" min="1" max="5" value="1">
+          <div class="inp-hint">Amount = full payment for these days</div>
+        </div>
+      </div>
+      <div id="field-monthly-dates" class="form-field full" style="display:none">
+        <label>Monthly Enrollment</label>
+        ${buildMonthPills(existing, isRenew)}
+        <div class="monthly-date-row">
+          <div class="form-field">
+            <label>Start Date *</label>
+            <input class="inp" id="f-month-start" type="date" value="${existing?.monthStart||''}" oninput="updateMonthHint()">
+          </div>
+          <div class="form-field">
+            <label>End Date *</label>
+            <input class="inp" id="f-month-end" type="date" value="${existing?.monthEnd||''}" oninput="updateMonthHint()">
+          </div>
+        </div>
+        <div id="f-month-hint" class="inp-hint good" style="margin-top:4px"></div>
+      </div>
+      ${!isEdit?`
+      <div class="form-field full">
+        <label id="lbl-pay">${isRenew?'Additional Payment (EGP)':'Total Payment (EGP)'}</label>
+        <input class="inp" id="f-pay" type="number" min="0" placeholder="0" oninput="updatePayHint()">
+        <div id="f-pay-hint" class="inp-hint good"></div>
+      </div>`:''}
+      <div class="form-field full">
+        <label>Notes</label>
+        <textarea class="inp" id="f-notes" rows="2" placeholder="Optional..." style="resize:vertical">${existing?.notes||''}</textarea>
+      </div>
+    </div>`;
+
+  // Post-render: ensure monthly pill visibility matches current camp
+  const mpAfter=document.getElementById('pill-monthly');
+  if(mpAfter) mpAfter.style.display=curCamp==='Shorouk'?'inline-flex':'none';
+  // fix type display
+  if(defType==='daily'){
+    document.getElementById('field-wend').style.display='none';
+    document.getElementById('field-days').style.display='block';
+  }
+  if(defType==='monthly'){
+    document.getElementById('field-weekly-dates').style.display='none';
+    document.getElementById('field-monthly-dates').style.display='block';
+    const mp=document.getElementById('pill-monthly');
+    if(mp){mp.style.display='inline-flex';mp.style.cssText='display:inline-flex;border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD';}
+  }
+  updatePayHint();
+  updateEndWeekHint();
+  updateMonthHint();
+}
+
+function setCampGroup(camp,grp){
+  window._formCamp=camp;window._formGroup=grp;
+  document.getElementById('pill-10j').className='radio-pill'+(camp==='10th'&&grp==='Juniors'?' on':'');
+  document.getElementById('pill-10s').className='radio-pill'+(camp==='10th'&&grp==='Seniors'?' on':'');
+  const shPill=document.getElementById('pill-sh');
+  shPill.className='radio-pill'+(camp==='Shorouk'?' on':'');
+  if(camp==='Shorouk'){shPill.style.cssText='border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD';}
+  else{shPill.style.cssText='';}
+  const shSub=document.getElementById('sh-subgroup-field');
+  if(shSub)shSub.style.display=camp==='Shorouk'?'flex':'none';
+  // If switching away from Shorouk while monthly was selected, reset to weekly
+  if(camp!=='Shorouk' && window._formType==='monthly'){
+    setPill('type','weekly');
+    toggleTypeFields();
+  }
+  // Show/hide monthly pill (use inline-flex to match label display)
+  const mpill=document.getElementById('pill-monthly');
+  if(mpill) mpill.style.display=camp==='Shorouk'?'inline-flex':'none';
+}
+
+function setShGroup(grp){
+  window._formGroup=grp;
+  document.getElementById('pill-shj').className='radio-pill'+(grp==='Juniors'?' on':'');
+  document.getElementById('pill-shs').className='radio-pill'+(grp==='Seniors'?' on':'');
+}
+
+function setPill(what,val){
+  if(what==='type'){
+    window._formType=val;
+    document.getElementById('pill-weekly').className='radio-pill'+(val==='weekly'?' on':'');
+    document.getElementById('pill-daily').className='radio-pill'+(val==='daily'?' on':'');
+    const mp=document.getElementById('pill-monthly');
+    if(mp){
+      mp.className='radio-pill'+(val==='monthly'?' on':'');
+      mp.style.cssText=val==='monthly'?'border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD':'';
+    }
+  }
+}
+function toggleTypeFields(){
+  const t=window._formType||'weekly';
+  const isDaily=t==='daily', isMonthly=t==='monthly';
+  // weekly/daily block
+  const wdBlock=document.getElementById('field-weekly-dates');
+  if(wdBlock)wdBlock.style.display=isMonthly?'none':'block';
+  // monthly block
+  const mBlock=document.getElementById('field-monthly-dates');
+  if(mBlock)mBlock.style.display=isMonthly?'block':'none';
+  // within weekly block
+  const wend=document.getElementById('field-wend');
+  if(wend)wend.style.display=isDaily?'none':'block';
+  const fdays=document.getElementById('field-days');
+  if(fdays)fdays.style.display=isDaily?'block':'none';
+  updatePayHint();
+  updateMonthHint();
+}
+function onStartChange(){
+  const start=Number(document.getElementById('f-wstart').value);
+  const endSel=document.getElementById('f-wend');
+  const curEnd=Number(endSel.value);
+  endSel.innerHTML=WEEKS.slice(start).map((w,i)=>{
+    const ri=start+i;
+    return `<option value="${ri}"${ri===Math.max(curEnd,start)?' selected':''}>${w.label}</option>`;
+  }).join('');
+  updateEndWeekHint();updatePayHint();
+}
+function updateEndWeekHint(){
+  const hint=document.getElementById('f-wend-hint');if(!hint)return;
+  const nw=Number(document.getElementById('f-wend')?.value??0)-Number(document.getElementById('f-wstart')?.value??0)+1;
+  hint.textContent=nw>0?`${nw} week${nw>1?'s':''}`:'';}
+function updatePayHint(){
+  const hint=document.getElementById('f-pay-hint');if(!hint)return;
+  const pay=Number(document.getElementById('f-pay')?.value||0);
+  if(window._formType==='daily'){hint.textContent='Full amount for selected week';return;}
+  if(window._formType==='monthly'){hint.textContent='Full monthly payment';return;}
+  const ws=Number(document.getElementById('f-wstart')?.value??0);
+  const we=Number(document.getElementById('f-wend')?.value??ws);
+  const nw=we-ws+1;
+  if(pay>0&&nw>0)hint.textContent=`${fmtN(pay)} / ${nw} week${nw>1?'s':''} = ${fmtN(Math.round(pay/nw))} EGP/week`;
+  else hint.textContent='';
+  if(formMode==='renew'){
+    const c=DB[renewalGrp]?.find(x=>x.id===renewalId);
+    if(c&&pay>0)hint.textContent+=` | New total: ${fmtN(c.totalPaid+pay)} EGP`;
+  }
+}
+function updatePayHintEdit(){
+  const hint=document.getElementById('f-pay-edit-hint');if(!hint)return;
+  const pay=Number(document.getElementById('f-pay-edit')?.value||0);
+  if(window._formType==='daily'){hint.textContent='Full amount';return;}
+  const ws=Number(document.getElementById('f-wstart')?.value??0);
+  const we=Number(document.getElementById('f-wend')?.value??ws);
+  const nw=we-ws+1;
+  hint.textContent=(pay>0&&nw>0)?`${fmtN(pay)} / ${nw} = ${fmtN(Math.round(pay/nw))} EGP/week`:'';
+}
+function onNameInput(){checkMatches();}
+function onDobInput(){
+  const dob=document.getElementById('f-dob')?.value;
+  const age=calcAge(dob);
+  const hint=document.getElementById('f-age-hint');if(!hint)return;
+  if(age===null){hint.textContent='';return;}
+  hint.className='inp-hint '+(age>12||age<4?'bad':'good');
+  hint.textContent=`Age: ${age} yrs ${age>12?'Over 12':age<4?'Under 4':'OK'}`;
+  checkMatches();
+}
+function checkMatches(){
+  const name=(document.getElementById('f-name')?.value||'').trim();
+  const dob=document.getElementById('f-dob')?.value||'';
+  const phone=document.getElementById('f-phone')?.value||'';
+  const area=document.getElementById('match-area');if(!area)return;
+  if(name.length<2){area.innerHTML='';return;}
+  const all=getAllChildren();
+  const scored=all.map(c=>({c,score:matchScore(c,name,dob,phone)}))
+    .filter(x=>x.score>25).sort((a,b)=>b.score-a.score).slice(0,3);
+  if(scored.length===0){area.innerHTML='';return;}
+  area.innerHTML=`<div class="match-warn">
+    Possible match${scored.length>1?'es':''} found — new child or renewal?
+    <div class="match-list">${scored.map(({c})=>`
+      <div class="match-item">
+        <div><div class="match-item-info">${c.name} (${c.camp}/${c.group})</div>
+        <div class="match-item-sub">DOB: ${c.dob||'-'} | ${c.phone}</div></div>
+        <button class="use-match-btn" onclick="switchToRenewal('${c.id}','${c.camp==='Shorouk'?'shorouk':c.group.toLowerCase()+'s'}')">Use - Renew</button>
+      </div>`).join('')}
+    </div></div>`;
+}
+function buildMonthPills(existing, isRenew){
+  // Shows a visual of the 3 camp months with used ones greyed out (for renewal)
+  const months=[
+    {id:'jun',label:'June',start:'2025-06-01',end:'2025-06-30'},
+    {id:'jul',label:'July',start:'2025-07-01',end:'2025-07-31'},
+    {id:'aug',label:'August',start:'2025-08-01',end:'2025-08-31'},
+  ];
+  if(!isRenew) return '';  // For new enrollments: just use the date pickers
+  const usedMonths=(existing?.months||[]).map(m=>m.start.slice(0,7)); // "2025-06" etc
+  return '<div style="margin-bottom:8px"><div style="font-size:11px;color:#888;font-weight:600;margin-bottom:6px">Previously enrolled months:</div>'
+    +'<div class="month-pill-row">'
+    +months.map(m=>{
+      const key=m.start.slice(0,7);
+      const used=usedMonths.includes(key);
+      return '<span class="month-pill '+(used?'used':'')+'">'+m.label+(used?' (done)':'')+'</span>';
+    }).join('')
+    +'</div></div>';
+}
+
+function updateMonthHint(){
+  const hint=document.getElementById('f-month-hint');if(!hint)return;
+  const s=document.getElementById('f-month-start')?.value;
+  const e=document.getElementById('f-month-end')?.value;
+  if(!s||!e){hint.textContent='';return;}
+  const ds=new Date(s),de=new Date(e);
+  if(de<ds){hint.textContent='End date must be after start date';hint.className='inp-hint bad';return;}
+  const days=Math.round((de-ds)/(1000*60*60*24))+1;
+  hint.textContent=days+' day'+(days>1?'s':'');
+  hint.className='inp-hint good';
+}
+
+function switchToRenewal(id,grp){closeForm();setTimeout(()=>openRenewal(id,grp),150);}
+
+// ═══════════════════ SUBMIT ═══════════════════
+function submitForm(){
+  if(formMode==='new')submitNew();
+  else if(formMode==='edit')submitEdit();
+  else submitRenewal();
+}
+
+function getDbKey(){
+  const camp=window._formCamp||'10th';
+  const grp=window._formGroup||'Juniors';
+  if(camp==='Shorouk')return'shorouk';
+  return grp==='Juniors'?'juniors':'seniors';
+}
+
+function submitNew(){
+  const name=document.getElementById('f-name').value.trim();
+  const dob=document.getElementById('f-dob').value;
+  const phone=document.getElementById('f-phone').value.trim();
+  const phone2=document.getElementById('f-phone2').value.trim();
+  const type=window._formType||'weekly';
+  const isMonthly=type==='monthly';
+  const ws=isMonthly?null:Number(document.getElementById('f-wstart').value);
+  const we=isMonthly?null:(type==='weekly'?Number(document.getElementById('f-wend').value):ws);
+  const days=type==='daily'?Number(document.getElementById('f-days').value||1):null;
+  const monthStart=isMonthly?(document.getElementById('f-month-start')?.value||''):null;
+  const monthEnd=isMonthly?(document.getElementById('f-month-end')?.value||''):null;
+  const pay=Number(document.getElementById('f-pay').value||0);
+  const notes=document.getElementById('f-notes').value;
+
+  if(!name)return alert('Please enter child name');
+  if(!dob)return alert('Please enter date of birth');
+  if(!phone)return alert('Please enter phone number');
+  if(type==='weekly'&&we<ws)return alert('End week must be >= start week');
+  if(isMonthly&&!monthStart)return alert('Please select a start date');
+  if(isMonthly&&!monthEnd)return alert('Please select an end date');
+  if(isMonthly&&monthEnd<monthStart)return alert('End date must be after start date');
+
+  const dbKey=getDbKey();
+  const child={id:genId(),name,dob,phone,phone2:phone2||'',
+    subType:type,weekStart:ws,weekEnd:we,days,
+    monthStart:monthStart||null,monthEnd:monthEnd||null,
+    months:[],  // array of {start,end,paid} for renewal history
+    totalPaid:pay,notes,createdAt:new Date().toISOString()};
+  if(isMonthly)child.months=[{start:monthStart,end:monthEnd,paid:pay}];
+  if(dbKey==='shorouk')child.subGroup=window._formGroup||'Juniors';
+  DB[dbKey].push(child);
+  saveData();closeForm();
+  showToast('Registered: '+name+' ('+dbKey+')');
+  renderDash10();renderDashSh();
+}
+
+function submitRenewal(){
+  const grp=renewalGrp,id=renewalId;
+  const type=window._formType||'weekly';
+  const isMonthly=type==='monthly';
+  const ws=isMonthly?null:Number(document.getElementById('f-wstart').value);
+  const we=isMonthly?null:(type==='weekly'?Number(document.getElementById('f-wend').value):ws);
+  const add=Number(document.getElementById('f-pay').value||0);
+  const notes=document.getElementById('f-notes').value;
+  const monthStart=isMonthly?(document.getElementById('f-month-start')?.value||''):null;
+  const monthEnd=isMonthly?(document.getElementById('f-month-end')?.value||''):null;
+
+  if(type==='weekly'&&we<ws)return alert('End week must be >= start week');
+  if(isMonthly&&!monthStart)return alert('Please select a start date');
+  if(isMonthly&&!monthEnd)return alert('Please select an end date');
+  if(isMonthly&&monthEnd<monthStart)return alert('End date must be after start date');
+
+  const idx=DB[grp].findIndex(c=>c.id===id);if(idx===-1)return;
+  const c=DB[grp][idx];
+  const prevMonths=c.months||[];
+  if(isMonthly){
+    // Check no overlap with existing months
+    const overlap=prevMonths.some(m=>!(monthEnd<m.start||monthStart>m.end));
+    if(overlap)return alert('This date range overlaps with a previous enrollment period');
+  }
+  DB[grp][idx]={...c,totalPaid:c.totalPaid+add,
+    weekStart:isMonthly?(c.weekStart??null):(Math.min(c.weekStart??ws,ws)),
+    weekEnd:isMonthly?(c.weekEnd??null):(Math.max(c.weekEnd??we,we)),
+    monthStart:isMonthly?monthStart:(c.monthStart||null),
+    monthEnd:isMonthly?monthEnd:(c.monthEnd||null),
+    months:isMonthly?[...prevMonths,{start:monthStart,end:monthEnd,paid:add}]:prevMonths,
+    subType:type,notes:notes||c.notes};
+  saveData();closeForm();
+  showToast('Renewed: '+c.name);
+  renderDash10();renderDashSh();renderList(grp);
+}
+
+function submitEdit(){
+  const id=renewalId,grp=renewalGrp;
+  const idx=DB[grp].findIndex(c=>c.id===id);if(idx===-1)return;
+  const name=document.getElementById('f-name')?.value.trim();
+  const dob=document.getElementById('f-dob')?.value;
+  const phone=document.getElementById('f-phone')?.value.trim();
+  const phone2=document.getElementById('f-phone2')?.value.trim()||'';
+  const type=window._formType||'weekly';
+  const ws=Number(document.getElementById('f-wstart')?.value??0);
+  const we=type==='weekly'?Number(document.getElementById('f-wend')?.value??ws):ws;
+  const days=type==='daily'?Number(document.getElementById('f-days')?.value||1):null;
+  const pay=Number(document.getElementById('f-pay-edit')?.value||0);
+  const notes=document.getElementById('f-notes')?.value||'';
+
+  if(!name)return alert('Please enter child name');
+  if(!dob)return alert('Please enter date of birth');
+  if(!phone)return alert('Please enter phone number');
+  if(type==='weekly'&&we<ws)return alert('End week must be >= start week');
+
+  const newDbKey=getDbKey();
+  const old=DB[grp][idx];
+  const updated={...old,name,dob,phone,phone2,subType:type,weekStart:ws,weekEnd:we,days,totalPaid:pay,notes};
+  if(newDbKey==='shorouk')updated.subGroup=window._formGroup||'Juniors';
+  else delete updated.subGroup;
+
+  if(newDbKey!==grp){
+    DB[grp].splice(idx,1);
+    DB[newDbKey].push(updated);
+  }else{
+    DB[grp][idx]=updated;
+  }
+  saveData();closeForm();
+  showToast('Updated: '+name);
+  renderDash10();renderDashSh();
+  renderList(grp);
+  if(newDbKey!==grp)renderList(newDbKey);
+}
+
+function deleteChild(id,grp){
+  if(!window.confirm('Delete this child?'))return;
+  DB[grp]=DB[grp].filter(c=>c.id!==id);
+  saveData();
+  renderList(grp);
+  renderDash10();renderDashSh();
+  showToast('Deleted','error');
+}
+
+// ═══════════════════ EXPORT ═══════════════════
+function doExport(){
+  try{
+    ensureFinanceData();
+    const wb=XLSX.book_new();
+
+    // ── helper: enrollment type label ──────────────────────────────────────
+    function typeLabel(c){
+      if(c.subType==='monthly') return 'Monthly';
+      if(c.subType==='daily')   return 'Daily';
+      return 'Weekly';
+    }
+
+    // ── helper: week range label for a child ────────────────────────────────
+    function childWeekRange(c){
+      if(c.subType==='monthly'){
+        const periods=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd}];
+        return periods.map(p=>(p.start||'?')+' to '+(p.end||'?')).join(' | ');
+      }
+      if(c.weekStart==null) return '';
+      const s=WEEKS[c.weekStart].label;
+      const e=WEEKS[c.weekEnd??c.weekStart].label;
+      return c.weekStart===c.weekEnd?s:s+' to '+e;
+    }
+
+    // ── Sheet 1-3: Enrollment lists ─────────────────────────────────────────
+    function buildEnrollSheet(children, label){
+      const hdr=['#','Name','DOB','Age','Phone 1','Phone 2','Group','Type',
+        'Enrollment Period','Total Paid (EGP)','EGP/Week','Notes'];
+      // Sort alphabetically for export
+      const sorted=[...children].sort((a,b)=>(a.name||'').localeCompare(b.name||'','ar'));
+      const rows=sorted.map((c,i)=>{
+        const nw=(c.weekEnd!=null&&c.weekStart!=null)?(c.weekEnd-c.weekStart+1):0;
+        const cpw=nw>0?Math.round(c.totalPaid/nw):'';
+        return[
+          i+1, c.name, c.dob, calcAge(c.dob)??'',
+          c.phone, c.phone2||'',
+          c.subGroup||label,
+          typeLabel(c),
+          childWeekRange(c),
+          c.totalPaid,
+          cpw,
+          c.notes||''
+        ];
+      });
+      const totRow=['','TOTAL','','','','','','','',
+        children.reduce((s,c)=>s+c.totalPaid,0),'',''];
+      XLSX.book_append_sheet(wb, XLSX.aoa_to_sheet([hdr,...rows,totRow]), label);
+    }
+    buildEnrollSheet(DB.juniors, 'Juniors');
+    buildEnrollSheet(DB.seniors, 'Seniors');
+    buildEnrollSheet(DB.shorouk, 'Shorouk');
+
+    // ── Sheet 4: Weekly P&L (10th + Shorouk side by side) ──────────────────
+    const plHdr=[
+      'Week','Week Dates',
+      // 10th
+      '10th Revenue','10th School %','10th School Cut',
+      '10th Freelancers','10th Other Exp','10th Total Exp','10th Net Profit',
+      '10th Children',
+      // Shorouk
+      'Shorouk Revenue','Shorouk School %','Shorouk School Cut',
+      'Shorouk Freelancers','Shorouk Other Exp','Shorouk Total Exp','Shorouk Net Profit',
+      'Shorouk Children',
+      // Combined
+      'Combined Revenue','Combined Total Exp','Combined Net Profit'
+    ];
+
+    let sumRow=['','TOTALS',0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0];
+    const plRows=WEEKS.map((w,wi)=>{
+      const f10 = weekFinance(wi,'10th');
+      const fsh = weekFinance(wi,'Shorouk');
+      // count children this week
+      const c10 = get10th().filter(c=>{
+        if(c.subType==='monthly'){
+          const ps=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd}];
+          return ps.some(p=>weekOverlapsMonthPeriod(wi,p.start,p.end));
+        }
+        return c.weekStart!=null&&c.weekEnd!=null&&wi>=c.weekStart&&wi<=c.weekEnd;
+      }).length;
+      const csh = getShorouk().filter(c=>{
+        if(c.subType==='monthly'){
+          const ps=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd}];
+          return ps.some(p=>weekOverlapsMonthPeriod(wi,p.start,p.end));
+        }
+        return c.weekStart!=null&&c.weekEnd!=null&&wi>=c.weekStart&&wi<=c.weekEnd;
+      }).length;
+
+      const combRev  = f10.rev + fsh.rev;
+      const combExp  = f10.totalExp + fsh.totalExp;
+      const combProf = f10.profit + fsh.profit;
+
+      // accumulate totals
+      sumRow[2]+=f10.rev; sumRow[4]+=f10.schoolCut;
+      sumRow[5]+=f10.frlCost; sumRow[6]+=f10.otherExp;
+      sumRow[7]+=f10.totalExp; sumRow[8]+=f10.profit; sumRow[9]+=c10;
+      sumRow[10]+=fsh.rev; sumRow[12]+=fsh.schoolCut;
+      sumRow[13]+=fsh.frlCost; sumRow[14]+=fsh.otherExp;
+      sumRow[15]+=fsh.totalExp; sumRow[16]+=fsh.profit; sumRow[17]+=csh;
+      sumRow[18]+=combRev; sumRow[19]+=combExp; sumRow[20]+=combProf;
+
+      return[
+        'W'+(wi+1), w.label.replace('W'+(wi+1)+': ',''),
+        f10.rev, f10.pct+'%', f10.schoolCut,
+        f10.frlCost, f10.otherExp, f10.totalExp, f10.profit, c10,
+        fsh.rev, fsh.pct+'%', fsh.schoolCut,
+        fsh.frlCost, fsh.otherExp, fsh.totalExp, fsh.profit, csh,
+        combRev, combExp, combProf
+      ];
+    });
+    // round sumRow numbers
+    sumRow=sumRow.map((v,i)=>i>=2&&typeof v==='number'?Math.round(v):v);
+    XLSX.book_append_sheet(wb, XLSX.aoa_to_sheet([plHdr,...plRows,sumRow]), 'Weekly P&L');
+
+    // ── Sheet 5: Freelancers by week ────────────────────────────────────────
+    const frlHdr=['Week','Name','Role','Camp','Days','Day Rate (EGP)','Total (EGP)'];
+    const frlRows=[];
+    let frlWkTotal=0, lastFrlWk='';
+    WEEKS.forEach((_,wi)=>{
+      const wk='W'+(wi+1);
+      const entries=DB.freelancers[wk]||[];
+      entries.forEach(f=>{
+        const tot=(f.days||0)*(f.dayRate||0);
+        frlRows.push([wk,f.name,f.role||'',f.camp,f.days,f.dayRate,tot]);
+        frlWkTotal+=tot;
+      });
+      if(entries.length>0){
+        frlRows.push(['','','','','','Week Total',
+          entries.reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0)]);
+        frlRows.push([]);
+      }
+    });
+    const frlTotRow=['','','','','','GRAND TOTAL',
+      Object.values(DB.freelancers).flat().reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0)];
+    XLSX.book_append_sheet(wb, XLSX.aoa_to_sheet([frlHdr,...frlRows,frlTotRow]), 'Freelancers');
+
+    // ── Sheet 6: Expenses detail ────────────────────────────────────────────
+    const expHdr=['Week','Camp','Description','Category','Amount (EGP)'];
+    const expRows=[];
+    WEEKS.forEach((_,wi)=>{
+      const wk='W'+(wi+1);
+      ['10th','Shorouk'].forEach(camp=>{
+        (DB.expenses[camp][wk]||[]).forEach(e=>{
+          expRows.push([wk, camp, e.desc, e.cat||'Other', e.amount]);
+        });
+      });
+    });
+    // General expenses
+    (DB.expenses['General']||[]).forEach(e=>{
+      expRows.push(['General','General',e.desc,e.cat||'Other',e.amount]);
+    });
+    const expTot=['','','','TOTAL',
+      expRows.reduce((s,r)=>s+(typeof r[4]==='number'?r[4]:0),0)];
+    XLSX.book_append_sheet(wb, XLSX.aoa_to_sheet([expHdr,...expRows,expTot]), 'Expenses');
+
+    // ── Sheet 7: Summary Dashboard ──────────────────────────────────────────
+    const all10Rev  = DB.juniors.reduce((s,c)=>s+c.totalPaid,0)
+                    + DB.seniors.reduce((s,c)=>s+c.totalPaid,0);
+    const allShRev  = DB.shorouk.reduce((s,c)=>s+c.totalPaid,0);
+    const totalRev  = all10Rev + allShRev;
+    const totalFrl  = Object.values(DB.freelancers).flat().reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
+    const totalWkExp= ['10th','Shorouk'].reduce((s,camp)=>
+      s+WEEKS.reduce((ss,_,wi)=>ss+weekExpenses('W'+(wi+1),camp),0),0);
+    const genExp    = generalExpenses();
+    const school10  = WEEKS.reduce((s,_,wi)=>s+weekFinance(wi,'10th').schoolCut,0);
+    const schoolSh  = WEEKS.reduce((s,_,wi)=>s+weekFinance(wi,'Shorouk').schoolCut,0);
+    const totalSchool= school10+schoolSh;
+    const totalExp  = totalFrl+totalWkExp+genExp+totalSchool;
+    const netProfit = totalRev-totalExp;
+
+    // Best week (combined)
+    const weekProfits=WEEKS.map((_,wi)=>weekFinance(wi,'10th').profit+weekFinance(wi,'Shorouk').profit);
+    const bestWi=weekProfits.reduce((bi,v,i)=>v>weekProfits[bi]?i:bi,0);
+    const worstWi=weekProfits.reduce((bi,v,i)=>v<weekProfits[bi]?i:bi,0);
+
+    const sumHdr=['Metric','10th Camp','Shorouk Camp','Total'];
+    const sumRows=[
+      ['REVENUE','','',''],
+      ['Total Revenue', all10Rev, allShRev, totalRev],
+      ['Juniors Revenue', DB.juniors.reduce((s,c)=>s+c.totalPaid,0),'N/A',''],
+      ['Seniors Revenue', DB.seniors.reduce((s,c)=>s+c.totalPaid,0),'N/A',''],
+      ['Children Count',
+        DB.juniors.length+DB.seniors.length,
+        DB.shorouk.length,
+        DB.juniors.length+DB.seniors.length+DB.shorouk.length],
+      ['','','',''],
+      ['EXPENSES','','',''],
+      ['School Share', school10, schoolSh, totalSchool],
+      ['Freelancer Salaries', totalFrl,'(shared)',''],
+      ['Weekly Other Expenses', totalWkExp,'',''],
+      ['General Expenses', genExp,'(shared)',''],
+      ['Total Expenses','','',totalExp],
+      ['','','',''],
+      ['PROFIT','','',''],
+      ['Net Profit','','',netProfit],
+      ['Profit Margin','','',totalRev>0?Math.round(netProfit/totalRev*100)+'%':'N/A'],
+      ['','','',''],
+      ['BEST & WORST WEEKS','','',''],
+      ['Best Week (profit)', WEEKS[bestWi].label, weekProfits[bestWi],''],
+      ['Worst Week (profit)',WEEKS[worstWi].label, weekProfits[worstWi],''],
+    ];
+    XLSX.book_append_sheet(wb, XLSX.aoa_to_sheet([sumHdr,...sumRows]), 'Summary');
+
+    XLSX.writeFile(wb,'LifeSchoolCamps.xlsx');
+    showToast('Excel exported — 7 sheets!');
+  }catch(e){showToast('Export failed','error');console.error(e);}
+}
+
+// ═══════════════════ TOAST ═══════════════════
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='error'?'#e74c3c':'#27ae60';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ═══════════════════ INIT ═══════════════════
+window._formGroup='Juniors';window._formType='weekly';window._formCamp='10th';
+renderDash10();
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FREELANCERS DATA HELPERS
+// ═══════════════════════════════════════════════════════════════════════════
+// DB.freelancers = { "W1": [{id,name,role,camp,days,dayRate}], "W2": [...], ... }
+// DB.expenses    = { "10th":{"W1":[{id,desc,amount}],...}, "Shorouk":{...}, "General":[{id,date,cat,desc,amount}] }
+// DB.finances    = { "10th":{"W1":{schoolPct,schoolAmt_override}}, "Shorouk":{...} }
+//   schoolAmt_override: if null → use schoolPct * revenue
+
+function ensureFinanceData() {
+  if (!DB.freelancers) DB.freelancers = {};
+  if (!DB.expenses) DB.expenses = { '10th':{}, 'Shorouk':{}, 'General':[] };
+  if (!DB.finances) DB.finances = { '10th':{}, 'Shorouk':{} };
+  // ensure every week exists
+  WEEKS.forEach((_,wi) => {
+    const wk = 'W'+(wi+1);
+    if (!DB.freelancers[wk]) DB.freelancers[wk] = [];
+    if (!DB.expenses['10th'][wk]) DB.expenses['10th'][wk] = [];
+    if (!DB.expenses['Shorouk'][wk]) DB.expenses['Shorouk'][wk] = [];
+    if (!DB.finances['10th'][wk]) DB.finances['10th'][wk] = {schoolPct:35};
+    if (!DB.finances['Shorouk'][wk]) DB.finances['Shorouk'][wk] = {schoolPct:50};
+  });
+  if (!DB.expenses['General']) DB.expenses['General'] = [];
+}
+
+// Check if a date string (YYYY-MM-DD) falls within a week index
+function dateInWeek(dateStr, wi) {
+  if(!dateStr) return false;
+  const d = new Date(dateStr);
+  const ws = WEEKS[wi].start, we = WEEKS[wi].end;
+  // compare date only (strip time)
+  const dn = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const wsn= new Date(ws.getFullYear(), ws.getMonth(), ws.getDate());
+  const wen= new Date(we.getFullYear(), we.getMonth(), we.getDate());
+  return dn >= wsn && dn <= wen;
+}
+
+// How many weeks does a monthly period (start→end) overlap with?
+function monthlyWeeksCount(monthStart, monthEnd) {
+  if(!monthStart||!monthEnd) return 1;
+  const ms=new Date(monthStart), me=new Date(monthEnd);
+  let count=0;
+  WEEKS.forEach((_,wi)=>{
+    const ws=new Date(WEEKS[wi].start.getFullYear(),WEEKS[wi].start.getMonth(),WEEKS[wi].start.getDate());
+    const we=new Date(WEEKS[wi].end.getFullYear(),WEEKS[wi].end.getMonth(),WEEKS[wi].end.getDate());
+    // overlap: period starts before week ends AND period ends after week starts
+    if(ms<=we && me>=ws) count++;
+  });
+  return Math.max(count,1);
+}
+
+// Check if a weekly index wi falls within a monthly period date range
+function weekOverlapsMonthPeriod(wi, monthStart, monthEnd) {
+  if(!monthStart||!monthEnd) return false;
+  const ms=new Date(monthStart), me=new Date(monthEnd);
+  const ws=new Date(WEEKS[wi].start.getFullYear(),WEEKS[wi].start.getMonth(),WEEKS[wi].start.getDate());
+  const we=new Date(WEEKS[wi].end.getFullYear(),WEEKS[wi].end.getMonth(),WEEKS[wi].end.getDate());
+  return ms<=we && me>=ws;
+}
+
+function weekRevenue(wi, camp) {
+  const children = camp==='10th' ? get10th() : getShorouk();
+  return children.reduce((s,c)=>{
+    if(c.subType==='monthly') {
+      // Sum across all months[] periods that overlap this week
+      const periods = (c.months&&c.months.length>0) ? c.months : [{start:c.monthStart,end:c.monthEnd,paid:c.totalPaid}];
+      let contrib=0;
+      periods.forEach(p=>{
+        if(weekOverlapsMonthPeriod(wi,p.start,p.end)){
+          const nw=monthlyWeeksCount(p.start,p.end);
+          contrib+=(p.paid||0)/nw;
+        }
+      });
+      return s+contrib;
+    }
+    if(c.weekStart==null||c.weekEnd==null) return s;
+    if(wi<c.weekStart||wi>c.weekEnd) return s;
+    if(c.subType==='daily') return s+c.totalPaid;
+    const nw=c.weekEnd-c.weekStart+1; return s+(nw>0?c.totalPaid/nw:0);
+  },0);
+}
+
+function weekFreelancerCost(wk) {
+  return (DB.freelancers[wk]||[]).reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
+}
+
+function weekExpenses(wk, camp) {
+  return (DB.expenses[camp][wk]||[]).reduce((s,e)=>s+(Number(e.amount)||0),0);
+}
+
+function generalExpenses() {
+  return (DB.expenses['General']||[]).reduce((s,e)=>s+(Number(e.amount)||0),0);
+}
+
+// Returns full finance summary for a week+camp
+function weekFinance(wi, camp) {
+  ensureFinanceData();
+  const wk = 'W'+(wi+1);
+  const rev = weekRevenue(wi, camp);
+  const pct = DB.finances[camp][wk].schoolPct || 0;
+  const schoolCut = Math.round(rev * pct / 100);
+  const frlCost = weekFreelancerCost(wk);
+  const otherExp = weekExpenses(wk, camp);
+  const totalExp = schoolCut + frlCost + otherExp;
+  const profit = Math.round(rev - totalExp);
+  return { wk, rev:Math.round(rev), pct, schoolCut, frlCost, otherExp, totalExp, profit };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FREELANCERS TAB
+// ═══════════════════════════════════════════════════════════════════════════
+let activeFreelancerWeek = 0; // index
+
+function renderFreelancers() {
+  ensureFinanceData();
+  // Week picker
+  const wpHtml = WEEKS.map((w,i)=>`
+    <button class="month-tab ${i===activeFreelancerWeek?'active':''}"
+      onclick="setFrlWeek(${i})" style="min-width:60px;font-size:11px">${w.label.split(':')[0]}</button>
+  `).join('');
+  document.getElementById('frl-week-tabs').innerHTML = wpHtml;
+
+  const wk = 'W'+(activeFreelancerWeek+1);
+  const rows = DB.freelancers[wk] || [];
+  const total = rows.reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
+
+  document.getElementById('frl-table-wrap').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:15px;font-weight:800;color:var(--dark)">${WEEKS[activeFreelancerWeek].label} — Freelancers</div>
+      <button class="hdr-btn" style="font-size:12px;padding:7px 14px" onclick="addFreelancer()">+ Add</button>
+    </div>
+    <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Name</th><th>Role</th><th>Camp</th><th>Days</th><th>Day Rate (EGP)</th><th>Total (EGP)</th><th></th>
+      </tr></thead>
+      <tbody>
+        ${rows.length===0?`<tr><td colspan="7" style="padding:30px;color:#bbb;text-align:center">No freelancers added yet</td></tr>`
+          : rows.map(f=>`<tr>
+            <td style="font-weight:700;color:var(--teal)">${f.name}</td>
+            <td>${f.role||''}</td>
+            <td><span style="font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;background:${f.camp==='Shorouk'?'var(--purple-lt)':'var(--teal-lt)'};color:${f.camp==='Shorouk'?'var(--purple)':'var(--teal)'}">${f.camp}</span></td>
+            <td>${f.days}</td>
+            <td>${fmtN(f.dayRate)}</td>
+            <td style="font-weight:700;color:var(--green)">${fmtN((f.days||0)*(f.dayRate||0))}</td>
+            <td>
+              <div style="display:flex;gap:4px">
+                <button class="edit-btn" onclick="editFreelancer('${f.id}','${wk}')">Edit</button>
+                <button class="del-btn"  onclick="delFreelancer('${f.id}','${wk}')">Del</button>
+              </div>
+            </td>
+          </tr>`).join('')}
+        ${rows.length>0?`<tr style="background:var(--yellow-lt)">
+          <td colspan="5" style="font-weight:800;text-align:right;padding:10px 14px">Week Total:</td>
+          <td style="font-weight:900;color:var(--teal);font-size:14px">${fmtN(total)} EGP</td>
+          <td></td>
+        </tr>`:''}
+      </tbody>
+    </table>
+    </div>`;
+}
+
+function setFrlWeek(i) { activeFreelancerWeek=i; renderFreelancers(); }
+
+function addFreelancer() {
+  const wk = 'W'+(activeFreelancerWeek+1);
+  showFrlModal(null, wk);
+}
+function editFreelancer(id, wk) {
+  const f = (DB.freelancers[wk]||[]).find(x=>x.id===id);
+  if(f) showFrlModal(f, wk);
+}
+function delFreelancer(id, wk) {
+  if(!window.confirm('Delete this freelancer entry?')) return;
+  DB.freelancers[wk] = (DB.freelancers[wk]||[]).filter(x=>x.id!==id);
+  saveData(); renderFreelancers(); renderFinances();
+  showToast('Deleted','error');
+}
+
+let frlModalWk = null, frlModalId = null;
+function showFrlModal(existing, wk) {
+  frlModalWk = wk; frlModalId = existing?.id||null;
+  document.getElementById('frl-modal-title').textContent = existing?'Edit Freelancer':'Add Freelancer';
+  const camp = existing?.camp||'10th';
+  document.getElementById('frl-modal-body').innerHTML = `
+    <div class="form-grid">
+      <div class="form-field"><label>Name *</label>
+        <input class="inp" id="fm-name" value="${existing?.name||''}" placeholder="Freelancer name"></div>
+      <div class="form-field"><label>Role</label>
+        <input class="inp" id="fm-role" value="${existing?.role||''}" placeholder="e.g. Supervisor, Trainer"></div>
+      <div class="form-field full"><label>Camp</label>
+        <div class="radio-grp">
+          <label class="radio-pill ${camp==='10th'?'on':''}" id="fpill-10" onclick="setFrlCamp('10th')">10th Camp</label>
+          <label class="radio-pill ${camp==='Shorouk'?'on':''}" id="fpill-sh" onclick="setFrlCamp('Shorouk')" style="${camp==='Shorouk'?'border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD':''}">Shorouk</label>
+          <label class="radio-pill ${camp==='Both'?'on':''}" id="fpill-bo" onclick="setFrlCamp('Both')">Both</label>
+        </div>
+      </div>
+      <div class="form-field"><label>Days Attended</label>
+        <input class="inp" id="fm-days" type="number" min="1" max="5" value="${existing?.days||1}"></div>
+      <div class="form-field"><label>Day Rate (EGP)</label>
+        <input class="inp" id="fm-rate" type="number" min="0" value="${existing?.dayRate||0}" oninput="updateFrlTotal()">
+        <div id="fm-total-hint" class="inp-hint good"></div>
+      </div>
+    </div>`;
+  window._frlCamp = camp;
+  updateFrlTotal();
+  document.getElementById('frl-modal').classList.add('open');
+}
+function setFrlCamp(c) {
+  window._frlCamp=c;
+  ['10th','Shorouk','Both'].forEach(x=>{
+    const el=document.getElementById('fpill-'+x.toLowerCase().slice(0,2));
+    if(!el) return;
+    el.className='radio-pill'+(x===c?' on':'');
+    el.style.cssText = (x==='Shorouk'&&x===c)?'border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD':'';
+  });
+}
+function updateFrlTotal() {
+  const days=Number(document.getElementById('fm-days')?.value||0);
+  const rate=Number(document.getElementById('fm-rate')?.value||0);
+  const h=document.getElementById('fm-total-hint'); if(h) h.textContent=days&&rate?`Total: ${fmtN(days*rate)} EGP`:'';
+}
+function saveFrlModal() {
+  const name=(document.getElementById('fm-name')?.value||'').trim();
+  if(!name) return alert('Please enter freelancer name');
+  const f = {
+    id: frlModalId||genId(),
+    name, role:document.getElementById('fm-role')?.value||'',
+    camp:window._frlCamp||'10th',
+    days:Number(document.getElementById('fm-days')?.value||1),
+    dayRate:Number(document.getElementById('fm-rate')?.value||0),
+  };
+  ensureFinanceData();
+  const list = DB.freelancers[frlModalWk];
+  if(frlModalId) { const i=list.findIndex(x=>x.id===frlModalId); if(i>=0)list[i]=f; else list.push(f); }
+  else list.push(f);
+  saveData();
+  document.getElementById('frl-modal').classList.remove('open');
+  renderFreelancers(); renderFinances();
+  showToast(frlModalId?'Updated':'Added: '+name);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EXPENSES TAB
+// ═══════════════════════════════════════════════════════════════════════════
+let activeExpSection = '10th'; // '10th' | 'Shorouk' | 'General'
+let activeExpWeek = 0;
+
+function renderExpenses() {
+  ensureFinanceData();
+  // Section tabs
+  document.getElementById('exp-section-tabs').innerHTML = [
+    ['10th','🏕️ 10th Expenses'],['Shorouk','🏡 Shorouk Expenses'],['General','📦 General Expenses']
+  ].map(([id,lbl])=>`<button class="month-tab ${activeExpSection===id?'active':''}" onclick="setExpSection('${id}')">${lbl}</button>`).join('');
+
+  if(activeExpSection==='General') {
+    renderGeneralExpenses();
+  } else {
+    renderWeeklyExpenses(activeExpSection);
+  }
+}
+
+function setExpSection(s) { activeExpSection=s; renderExpenses(); }
+
+function renderWeeklyExpenses(camp) {
+  // week tabs
+  const wtHtml = WEEKS.map((w,i)=>`
+    <button class="month-tab ${i===activeExpWeek?'active':''}"
+      onclick="setExpWeek(${i})" style="min-width:60px;font-size:11px">${w.label.split(':')[0]}</button>
+  `).join('');
+
+  const wk = 'W'+(activeExpWeek+1);
+  const rows = DB.expenses[camp][wk]||[];
+  const total = rows.reduce((s,e)=>s+(Number(e.amount)||0),0);
+
+  document.getElementById('exp-content').innerHTML = `
+    <div class="month-tabs" style="margin-bottom:12px">${wtHtml}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:14px;font-weight:800">${WEEKS[activeExpWeek].label} — ${camp} Expenses</div>
+      <button class="hdr-btn" style="font-size:12px;padding:7px 14px" onclick="addExpense('${camp}','${wk}')">+ Add</button>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Description</th><th>Category</th><th>Amount (EGP)</th><th></th></tr></thead>
+      <tbody>
+        ${rows.length===0?`<tr><td colspan="4" style="padding:30px;color:#bbb;text-align:center">No expenses recorded</td></tr>`
+          :rows.map(e=>`<tr>
+            <td style="text-align:left;font-weight:600">${e.desc||''}</td>
+            <td><span style="font-size:11px;background:var(--orange-lt);color:var(--orange);padding:2px 8px;border-radius:10px;font-weight:700">${e.cat||'Other'}</span></td>
+            <td style="font-weight:700;color:var(--red)">${fmtN(e.amount)} EGP</td>
+            <td>
+              <div style="display:flex;gap:4px">
+                <button class="edit-btn" onclick="editExpense('${camp}','${wk}','${e.id}')">Edit</button>
+                <button class="del-btn"  onclick="delExpense('${camp}','${wk}','${e.id}')">Del</button>
+              </div>
+            </td>
+          </tr>`).join('')}
+        ${rows.length>0?`<tr style="background:var(--red-lt)">
+          <td colspan="2" style="font-weight:800;text-align:right;padding:10px 14px">Week Total:</td>
+          <td style="font-weight:900;color:var(--red)">${fmtN(total)} EGP</td><td></td>
+        </tr>`:''}
+      </tbody>
+    </table></div>`;
+}
+
+function setExpWeek(i) { activeExpWeek=i; renderExpenses(); }
+
+function renderGeneralExpenses() {
+  const rows = DB.expenses['General']||[];
+  const total = rows.reduce((s,e)=>s+(Number(e.amount)||0),0);
+  document.getElementById('exp-content').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:14px;font-weight:800">General Expenses (Full-timers, Materials, etc.)</div>
+      <button class="hdr-btn" style="font-size:12px;padding:7px 14px" onclick="addExpense('General',null)">+ Add</button>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount (EGP)</th><th></th></tr></thead>
+      <tbody>
+        ${rows.length===0?`<tr><td colspan="5" style="padding:30px;color:#bbb;text-align:center">No general expenses yet</td></tr>`
+          :rows.map(e=>`<tr>
+            <td style="font-size:11px;color:#888">${e.date||''}</td>
+            <td style="text-align:left;font-weight:600">${e.desc||''}</td>
+            <td><span style="font-size:11px;background:var(--orange-lt);color:var(--orange);padding:2px 8px;border-radius:10px;font-weight:700">${e.cat||'Other'}</span></td>
+            <td style="font-weight:700;color:var(--red)">${fmtN(e.amount)} EGP</td>
+            <td>
+              <div style="display:flex;gap:4px">
+                <button class="edit-btn" onclick="editExpense('General',null,'${e.id}')">Edit</button>
+                <button class="del-btn"  onclick="delExpense('General',null,'${e.id}')">Del</button>
+              </div>
+            </td>
+          </tr>`).join('')}
+        ${rows.length>0?`<tr style="background:var(--red-lt)">
+          <td colspan="3" style="font-weight:800;text-align:right;padding:10px 14px">Total:</td>
+          <td style="font-weight:900;color:var(--red)">${fmtN(total)} EGP</td><td></td>
+        </tr>`:''}
+      </tbody>
+    </table></div>`;
+}
+
+// Expense modal
+let expModalCamp=null,expModalWk=null,expModalId=null;
+const EXP_CATS_WEEKLY = ['Supplies','Transportation','Food & Water','Maintenance','Other'];
+const EXP_CATS_GENERAL = ['Full-timer Salary','Marketing','Materials','Equipment','Rent','Other'];
+
+function addExpense(camp,wk) { expModalCamp=camp;expModalWk=wk;expModalId=null; showExpModal(null); }
+function editExpense(camp,wk,id) {
+  expModalCamp=camp;expModalWk=wk;expModalId=id;
+  const list = camp==='General'?DB.expenses['General']:(DB.expenses[camp][wk]||[]);
+  const e = list.find(x=>x.id===id);
+  showExpModal(e);
+}
+function showExpModal(existing) {
+  const isGen = expModalCamp==='General';
+  const cats = isGen ? EXP_CATS_GENERAL : EXP_CATS_WEEKLY;
+  document.getElementById('exp-modal-title').textContent = existing?'Edit Expense':'Add Expense';
+  document.getElementById('exp-modal-body').innerHTML = `
+    <div class="form-grid">
+      ${isGen?`<div class="form-field full"><label>Date</label>
+        <input class="inp" id="em-date" type="date" value="${existing?.date||''}"></div>`:''}
+      <div class="form-field full"><label>Description *</label>
+        <input class="inp" id="em-desc" value="${existing?.desc||''}" placeholder="What was this expense?"></div>
+      <div class="form-field"><label>Category</label>
+        <select class="inp" id="em-cat">
+          ${cats.map(c=>`<option value="${c}"${(existing?.cat||'')=== c?' selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-field"><label>Amount (EGP) *</label>
+        <input class="inp" id="em-amount" type="number" min="0" value="${existing?.amount||''}" placeholder="0"></div>
+    </div>`;
+  document.getElementById('exp-modal').classList.add('open');
+}
+function saveExpModal() {
+  const desc=(document.getElementById('em-desc')?.value||'').trim();
+  const amount=Number(document.getElementById('em-amount')?.value||0);
+  if(!desc) return alert('Please enter description');
+  if(!amount) return alert('Please enter amount');
+  const isGen=expModalCamp==='General';
+  const e = {
+    id:expModalId||genId(), desc,
+    cat:document.getElementById('em-cat')?.value||'Other', amount,
+    ...(isGen?{date:document.getElementById('em-date')?.value||''}:{})
+  };
+  ensureFinanceData();
+  if(isGen) {
+    const list=DB.expenses['General'];
+    if(expModalId){const i=list.findIndex(x=>x.id===expModalId);if(i>=0)list[i]=e;else list.push(e);}
+    else list.push(e);
+  } else {
+    const list=DB.expenses[expModalCamp][expModalWk];
+    if(expModalId){const i=list.findIndex(x=>x.id===expModalId);if(i>=0)list[i]=e;else list.push(e);}
+    else list.push(e);
+  }
+  saveData();
+  document.getElementById('exp-modal').classList.remove('open');
+  renderExpenses(); renderFinances();
+  showToast(expModalId?'Updated':'Expense added');
+}
+function delExpense(camp,wk,id) {
+  if(!window.confirm('Delete this expense?')) return;
+  if(camp==='General') DB.expenses['General']=DB.expenses['General'].filter(x=>x.id!==id);
+  else DB.expenses[camp][wk]=(DB.expenses[camp][wk]||[]).filter(x=>x.id!==id);
+  saveData(); renderExpenses(); renderFinances();
+  showToast('Deleted','error');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FINANCES TAB
+// ═══════════════════════════════════════════════════════════════════════════
+function renderFinances() {
+  ensureFinanceData();
+
+  // Build summary for each camp
+  function campSummary(camp) {
+    let totalRev=0,totalSchool=0,totalFrl=0,totalExp=0,totalProfit=0;
+    const rows = WEEKS.map((_,wi)=>{
+      const f=weekFinance(wi,camp);
+      totalRev+=f.rev; totalSchool+=f.schoolCut; totalFrl+=f.frlCost;
+      totalExp+=f.totalExp; totalProfit+=f.profit;
+      return f;
+    });
+    return {rows,totalRev,totalSchool,totalFrl,totalExp,totalProfit};
+  }
+
+  const s10=campSummary('10th');
+  const ssh=campSummary('Shorouk');
+  const genExp=generalExpenses();
+  const grandProfit=s10.totalProfit+ssh.totalProfit-genExp;
+
+  const finHtml = (camp, data, accentColor) => `
+    <div class="card" style="margin-bottom:18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;flex-wrap:wrap;gap:8px">
+        <div class="card-title" style="padding:0">${camp==='10th'?'🏕️ 10th Camp':'🏡 Shorouk Camp'} Finances</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span style="font-size:12px;background:var(--teal-lt);color:var(--teal);padding:4px 12px;border-radius:20px;font-weight:700">Revenue: ${fmtN(data.totalRev)} EGP</span>
+          <span style="font-size:12px;background:var(--red-lt);color:var(--red);padding:4px 12px;border-radius:20px;font-weight:700">Expenses: ${fmtN(data.totalExp)} EGP</span>
+          <span style="font-size:12px;background:var(--green-lt);color:var(--green);padding:4px 12px;border-radius:20px;font-weight:700;font-size:13px">Profit: ${fmtN(data.totalProfit)} EGP</span>
+        </div>
+      </div>
+      <div class="tbl-wrap" style="margin:0 18px 18px">
+      <table>
+        <thead><tr>
+          <th>Week</th><th>Revenue</th>
+          <th>School %<br><small style="font-weight:400;font-size:10px">tap to edit</small></th>
+          <th>School Cut</th><th>Freelancers</th><th>Other Exp.</th><th>Total Exp.</th>
+          <th style="background:#1a6b2e">Net Profit</th>
+        </tr></thead>
+        <tbody>
+          ${data.rows.map((f,wi)=>{
+            const profitColor=f.profit>=0?'var(--green)':'var(--red)';
+            const wk='W'+(wi+1);
+            const pct=DB.finances[camp][wk].schoolPct||0;
+            return `<tr>
+              <td style="font-weight:700;color:var(--teal);font-size:12px">${WEEKS[wi].label}</td>
+              <td style="font-weight:700">${fmtN(f.rev)}</td>
+              <td>
+                <input type="number" min="0" max="100"
+                  style="width:52px;padding:4px 6px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;text-align:center;font-family:var(--font)"
+                  value="${pct}"
+                  onchange="updateSchoolPct('${camp}','${wk}',this.value)">%
+              </td>
+              <td style="color:var(--orange);font-weight:700">${fmtN(f.schoolCut)}</td>
+              <td style="color:var(--red)">${fmtN(f.frlCost)}</td>
+              <td style="color:var(--red)">${fmtN(f.otherExp)}</td>
+              <td style="font-weight:700;color:var(--red)">${fmtN(f.totalExp)}</td>
+              <td style="font-weight:900;color:${profitColor};background:${f.profit>=0?'#eafaf1':'#fdedec'}">${fmtN(f.profit)}</td>
+            </tr>`;
+          }).join('')}
+          <tr style="background:var(--yellow-lt)">
+            <td style="font-weight:900">TOTAL</td>
+            <td style="font-weight:900">${fmtN(data.totalRev)}</td>
+            <td>—</td>
+            <td style="font-weight:700;color:var(--orange)">${fmtN(data.totalSchool)}</td>
+            <td style="font-weight:700;color:var(--red)">${fmtN(data.totalFrl)}</td>
+            <td style="font-weight:700;color:var(--red)">${fmtN(data.totalExp-data.totalSchool-data.totalFrl)}</td>
+            <td style="font-weight:700;color:var(--red)">${fmtN(data.totalExp)}</td>
+            <td style="font-weight:900;color:${data.totalProfit>=0?'var(--green)':'var(--red)'};background:${data.totalProfit>=0?'#eafaf1':'#fdedec'}">${fmtN(data.totalProfit)}</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>`;
+
+  // Grand summary KPIs
+  const totalRevAll = s10.totalRev + ssh.totalRev;
+  const totalExpAll = s10.totalExp + ssh.totalExp + genExp;
+
+  document.getElementById('fin-content').innerHTML = `
+    <div class="kpi-grid" style="margin-bottom:16px">
+      <div class="kpi-card" style="--accent:#006D77"><div class="kpi-lbl">Total Revenue</div><div class="kpi-val">${fmtN(totalRevAll)} <span class="kpi-unit">EGP</span></div></div>
+      <div class="kpi-card" style="--accent:#E74C3C"><div class="kpi-lbl">Total Expenses</div><div class="kpi-val">${fmtN(totalExpAll)} <span class="kpi-unit">EGP</span></div></div>
+      <div class="kpi-card" style="--accent:#27AE60"><div class="kpi-lbl">Net Profit</div><div class="kpi-val" style="color:${grandProfit>=0?'var(--green)':'var(--red)'}">${fmtN(grandProfit)} <span class="kpi-unit">EGP</span></div></div>
+      <div class="kpi-card" style="--accent:#E67E22"><div class="kpi-lbl">General Expenses</div><div class="kpi-val">${fmtN(genExp)} <span class="kpi-unit">EGP</span></div></div>
+    </div>
+    ${finHtml('10th',s10,'#006D77')}
+    ${finHtml('Shorouk',ssh,'#8E44AD')}
+    <div class="card">
+      <div class="card-title" style="padding:16px 18px 12px">📦 General Expenses Summary</div>
+      <div style="padding:0 18px 18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <span style="font-size:13px;color:#888">Full-timers, marketing, materials, rent, etc.</span>
+          <span style="font-size:14px;font-weight:900;color:var(--red)">${fmtN(genExp)} EGP total</span>
+        </div>
+        ${(DB.expenses['General']||[]).length===0?'<div style="color:#bbb;padding:20px;text-align:center">No general expenses — add them in the Expenses tab</div>':`
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr></thead>
+          <tbody>
+            ${(DB.expenses['General']||[]).map(e=>`<tr>
+              <td style="font-size:11px;color:#888">${e.date||''}</td>
+              <td style="text-align:left">${e.desc}</td>
+              <td style="font-size:11px">${e.cat}</td>
+              <td style="font-weight:700;color:var(--red)">${fmtN(e.amount)} EGP</td>
+            </tr>`).join('')}
+          </tbody>
+        </table></div>`}
+      </div>
+    </div>`;
+}
+
+function updateSchoolPct(camp, wk, val) {
+  ensureFinanceData();
+  DB.finances[camp][wk].schoolPct = Math.max(0, Math.min(100, Number(val)||0));
+  saveData();
+  renderFinances();
+}
+
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SHARE / EXPORT — full custom export builder
+// ═══════════════════════════════════════════════════════════════════════════
+
+// State
+let shareTemplate = 'admin'; // 'admin' | 'school'
+let admListKey    = 'juniors';
+let admScope      = 'all';   // 'all' | 'week'
+let admWeekIdx    = 0;
+let schCamp       = '10th';
+let schWeekIdx    = 0;
+
+// All toggleable columns for each template
+const ADM_COLS = [
+  {id:'name',  label:'Name',      def:true,  always:true},
+  {id:'age',   label:'Age',       def:true},
+  {id:'phone', label:'Phone 1',   def:true},
+  {id:'phone2',label:'Phone 2',   def:false},
+  {id:'group', label:'Group',     def:false},
+  {id:'weeks', label:'Weeks',     def:true},
+  {id:'type',  label:'Type',      def:false},
+  {id:'notes', label:'Notes',     def:true},
+];
+const SCH_COLS = [
+  {id:'name',  label:'Name',      def:true,  always:true},
+  {id:'age',   label:'Age',       def:true},
+  {id:'type',  label:'Type',      def:false},
+  {id:'paid',  label:'Total Paid',def:true},
+  {id:'share', label:'School Share', def:true},
+  {id:'notes', label:'Notes',     def:false},
+];
+
+let admColState = {};
+let schColState = {};
+
+function initColState() {
+  ADM_COLS.forEach(c => { admColState[c.id] = c.def; });
+  SCH_COLS.forEach(c => { schColState[c.id] = c.def; });
+}
+initColState();
+
+function openShareModal() {
+  initColState();
+  backToTemplates();
+  document.getElementById('share-modal-outer').classList.add('open');
+}
+function closeShareModal() {
+  document.getElementById('share-modal-outer').classList.remove('open');
+}
+
+function chooseTemplate(tpl) {
+  shareTemplate = tpl;
+  document.getElementById('step-template').style.display = 'none';
+  document.getElementById('step-admin').style.display  = tpl==='admin'  ? 'block' : 'none';
+  document.getElementById('step-school').style.display = tpl==='school' ? 'block' : 'none';
+  if (tpl==='admin')  renderAdmStep();
+  if (tpl==='school') renderSchStep();
+}
+
+function backToTemplates() {
+  document.getElementById('step-template').style.display = 'block';
+  document.getElementById('step-admin').style.display    = 'none';
+  document.getElementById('step-school').style.display   = 'none';
+  const lr = document.getElementById('share-link-result');
+  if(lr) lr.style.display='none';
+}
+
+// ── ADMIN STEP ───────────────────────────────────────────────────────────────
+function setAdmList(k) {
+  admListKey = k;
+  ['juniors','seniors','shorouk'].forEach(x=>{
+    const el=document.getElementById('adm-'+x); if(!el) return;
+    el.className='share-pill'+(x===k?' on':'');
+    if(x==='shorouk') el.style.cssText=(k==='shorouk'?'border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD':'');
+  });
+  renderAdmColToggles();
+  renderAdmWeekBtns();
+  updateAdmWeekCount();
+}
+
+function setAdmScope(s) {
+  admScope = s;
+  ['all','week'].forEach(x=>{
+    const el=document.getElementById('adm-scope-'+x); if(!el) return;
+    el.className='share-pill'+(x===s?' on':'');
+  });
+  const picker = document.getElementById('adm-week-picker');
+  if(picker) picker.style.display = s==='week' ? 'block' : 'none';
+  if(s==='week') renderAdmWeekBtns();
+  updateAdmWeekCount();
+}
+
+function setAdmWeek(i) {
+  admWeekIdx = i;
+  WEEKS.forEach((_,j)=>{
+    const el=document.getElementById('admw-'+j); if(!el) return;
+    el.style.background   = j===i ? '#006D77' : '#fff';
+    el.style.color        = j===i ? '#fff'    : '#888';
+    el.style.borderColor  = j===i ? '#006D77' : '#E0ECEE';
+  });
+  updateAdmWeekCount();
+}
+
+function renderAdmWeekBtns() {
+  const wrap = document.getElementById('adm-week-btns'); if(!wrap) return;
+  wrap.innerHTML = WEEKS.map((w,i)=>`
+    <button id="admw-${i}" onclick="setAdmWeek(${i})"
+      style="padding:5px 10px;border:2px solid ${i===admWeekIdx?'#006D77':'#E0ECEE'};
+      border-radius:16px;background:${i===admWeekIdx?'#006D77':'#fff'};
+      color:${i===admWeekIdx?'#fff':'#888'};cursor:pointer;font-size:11px;
+      font-weight:700;font-family:var(--font)">W${i+1}</button>`
+  ).join('');
+  updateAdmWeekCount();
+}
+
+function getAdmChildren() {
+  const all = DB[admListKey] || [];
+  if(admScope === 'all') return all;
+  // filter by week
+  return all.filter(c => {
+    if(c.subType==='monthly'){
+      const periods=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd}];
+      return periods.some(p=>weekOverlapsMonthPeriod(admWeekIdx,p.start,p.end));
+    }
+    return c.weekStart!=null && c.weekEnd!=null &&
+           admWeekIdx>=c.weekStart && admWeekIdx<=c.weekEnd;
+  });
+}
+
+function updateAdmWeekCount() {
+  const el = document.getElementById('adm-week-count'); if(!el) return;
+  if(admScope==='all') { el.textContent=''; return; }
+  const count = getAdmChildren().length;
+  el.textContent = count + ' child' + (count!==1?'ren':'') + ' enrolled in ' + WEEKS[admWeekIdx].label;
+}
+
+function renderAdmStep() {
+  setAdmList(admListKey);
+  renderAdmColToggles();
+  // init scope
+  ['all','week'].forEach(x=>{
+    const el=document.getElementById('adm-scope-'+x); if(!el) return;
+    el.className='share-pill'+(x===admScope?' on':'');
+  });
+  const picker=document.getElementById('adm-week-picker');
+  if(picker) picker.style.display=admScope==='week'?'block':'none';
+  if(admScope==='week') renderAdmWeekBtns();
+  const lr=document.getElementById('share-link-result'); if(lr)lr.style.display='none';
+}
+
+function renderAdmColToggles() {
+  const wrap = document.getElementById('col-toggles'); if(!wrap) return;
+  wrap.innerHTML = ADM_COLS.filter(c=> c.id!=='group' || admListKey==='shorouk')
+    .map(c=>`
+      <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+        border:2px solid ${admColState[c.id]?'#006D77':'#E0ECEE'};border-radius:10px;
+        background:${admColState[c.id]?'#E8F4F5':'#fff'};cursor:pointer;user-select:none;
+        font-size:13px;font-weight:${admColState[c.id]?'700':'500'};
+        color:${admColState[c.id]?'#006D77':'#888'}">
+        <input type="checkbox" ${admColState[c.id]?'checked':''} ${c.always?'disabled':''}
+          onchange="toggleAdmCol('${c.id}',this.checked)"
+          style="width:15px;height:15px;accent-color:#006D77">
+        ${c.label}${c.always?' <span style=\'font-size:10px;opacity:.6\'>(required)</span>':''}
+      </label>`).join('');
+}
+
+function toggleAdmCol(id, val) {
+  admColState[id] = val;
+  renderAdmColToggles();
+}
+
+// ── SCHOOL STEP ──────────────────────────────────────────────────────────────
+function setSchCamp(c) {
+  schCamp = c;
+  ['10th','shorouk'].forEach(x=>{
+    const el=document.getElementById('sch-'+x); if(!el) return;
+    el.className='share-pill'+(x===c||(x==='shorouk'&&c==='Shorouk')?' on':'');
+    if(x==='shorouk') el.style.cssText=(c==='Shorouk'?'border-color:#8E44AD;background:var(--purple-lt);color:#8E44AD':'');
+  });
+}
+
+function renderSchStep() {
+  setSchCamp(schCamp);
+  // Week buttons
+  const wWrap = document.getElementById('sch-week-btns'); if(!wWrap) return;
+  wWrap.innerHTML = WEEKS.map((w,i)=>`
+    <button onclick="setSchWeek(${i})" id="schw-${i}"
+      style="padding:6px 12px;border:2px solid ${i===schWeekIdx?'#E67E22':'#E0ECEE'};
+      border-radius:20px;background:${i===schWeekIdx?'#E67E22':'#fff'};
+      color:${i===schWeekIdx?'#fff':'#888'};cursor:pointer;font-size:11px;font-weight:700;
+      font-family:var(--font)">W${i+1}</button>`).join('');
+  renderSchColToggles();
+}
+
+function setSchWeek(i) {
+  schWeekIdx = i;
+  WEEKS.forEach((_,j)=>{
+    const el=document.getElementById('schw-'+j); if(!el) return;
+    el.style.background = j===i?'#E67E22':'#fff';
+    el.style.color       = j===i?'#fff':'#888';
+    el.style.borderColor = j===i?'#E67E22':'#E0ECEE';
+  });
+}
+
+function renderSchColToggles() {
+  const wrap=document.getElementById('sch-col-toggles'); if(!wrap) return;
+  wrap.innerHTML = SCH_COLS.map(c=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:8px 12px;
+      border:2px solid ${schColState[c.id]?'#E67E22':'#E0ECEE'};border-radius:10px;
+      background:${schColState[c.id]?'#FEF9E7':'#fff'};cursor:pointer;user-select:none;
+      font-size:13px;font-weight:${schColState[c.id]?'700':'500'};
+      color:${schColState[c.id]?'#E67E22':'#888'}">
+      <input type="checkbox" ${schColState[c.id]?'checked':''} ${c.always?'disabled':''}
+        onchange="toggleSchCol('${c.id}',this.checked)"
+        style="width:15px;height:15px;accent-color:#E67E22">
+      ${c.label}${c.always?' <span style=\'font-size:10px;opacity:.6\'>(required)</span>':''}
+    </label>`).join('');
+}
+
+function toggleSchCol(id, val) {
+  schColState[id] = val;
+  renderSchColToggles();
+}
+
+// ── GENERATE ─────────────────────────────────────────────────────────────────
+function generateExport(tpl, format) {
+  const html = tpl==='admin' ? buildAdminPage() : buildSchoolPage();
+  if (format==='print') {
+    const w = window.open('','_blank');
+    if(!w){ alert('Please allow popups for this feature'); return; }
+    w.document.write(html); w.document.close(); w.focus();
+    setTimeout(()=>w.print(), 600);
+  } else {
+    const blob = new Blob([html],{type:'text/html'});
+    const url  = URL.createObjectURL(blob);
+    const lr   = document.getElementById('share-link-result');
+    if(lr){ lr.style.display='block'; }
+    const lt   = document.getElementById('share-link-text');
+    if(lt){ lt.textContent=url; }
+    const cc   = document.getElementById('share-copy-confirm');
+    if(cc){ cc.style.display='none'; }
+    window.open(url,'_blank');
+  }
+}
+
+function copyShareLink() {
+  const text = document.getElementById('share-link-text').textContent;
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(()=>{
+      document.getElementById('share-copy-confirm').style.display='block';
+    });
+  } else {
+    const ta=document.createElement('textarea');
+    ta.value=text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    document.getElementById('share-copy-confirm').style.display='block';
+  }
+}
+
+// ── AGE HELPER ───────────────────────────────────────────────────────────────
+function ageFromDob(dob) {
+  if(!dob) return '-';
+  const t=new Date(), b=new Date(dob);
+  let a=t.getFullYear()-b.getFullYear();
+  const m=t.getMonth()-b.getMonth();
+  if(m<0||(m===0&&t.getDate()<b.getDate()))a--;
+  return a;
+}
+
+function wkRangeLabel(ws,we) {
+  const wl=['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','W13'];
+  if(ws==null) return '-';
+  return (ws===we||we==null) ? wl[ws] : wl[ws]+' to '+wl[we!=null?we:ws];
+}
+
+// ── SHARED PAGE CSS ──────────────────────────────────────────────────────────
+function basePageCSS(accent, gradEnd) {
+  return `*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,'Segoe UI',sans-serif;background:#f4f8f9;color:#1a1a2e;padding:16px;}
+.hdr{background:linear-gradient(135deg,${accent},${gradEnd});border-radius:12px;padding:16px 20px;
+  margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
+.hdr-title{color:#fff;font-size:18px;font-weight:900;line-height:1.2;}
+.hdr-sub{color:rgba(255,255,255,.85);font-size:13px;margin-top:3px;font-weight:600;}
+.badge{background:rgba(255,255,255,.25);color:#fff;padding:4px 12px;border-radius:16px;font-size:12px;font-weight:700;display:inline-block;}
+.notice{background:#fff3cd;border:1.5px solid #FFC300;border-radius:8px;padding:9px 14px;
+  margin-bottom:12px;font-size:12px;color:#856404;font-weight:600;}
+.wrap{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.08);margin-bottom:14px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{background:${accent};color:#fff;padding:11px 12px;text-align:left;font-weight:700;white-space:nowrap;}
+tbody tr:nth-child(even){background:#f8fffe;}
+tbody td{padding:10px 12px;border-bottom:1px solid #f0f6f7;vertical-align:top;}
+.num{color:#bbb;font-size:11px;text-align:center;width:28px;}
+.bold{font-weight:700;color:${accent};}
+.mono{font-family:monospace;font-size:12px;}
+.sml{font-size:11px;color:#555;}
+.it{font-size:12px;color:#777;font-style:italic;}
+.tot-row td{font-weight:700;color:${accent};background:#e8f4f5;padding:11px 12px;}
+.footer{text-align:center;font-size:11px;color:#aaa;margin-top:10px;}
+@media print{body{background:#fff;padding:8px;}.notice{display:none;}}`;
+}
+
+// ── BUILD ADMIN PAGE ──────────────────────────────────────────────────────────
+function buildAdminPage() {
+  const children = getAdmChildren();
+  const isShorouk = admListKey==='shorouk';
+  const baseLabel = admListKey==='juniors'?'Juniors — 10th Camp':admListKey==='seniors'?'Seniors — 10th Camp':'Shorouk Camp';
+  const label = admScope==='week' ? baseLabel+' — '+WEEKS[admWeekIdx].label : baseLabel;
+  const accent  = isShorouk?'#8E44AD':'#006D77';
+  const gradEnd = isShorouk?'#A569BD':'#4AABB5';
+  const cols = ADM_COLS.filter(c=>(c.id!=='group'||isShorouk) && admColState[c.id]);
+  const exported = new Date().toLocaleDateString('en-GB');
+
+  const headCells = ['#', ...cols.map(c=>c.label)].map(h=>`<th>${h}</th>`).join('');
+  const bodyRows = children.map((c,i)=>{
+    const cells = cols.map(col=>{
+      if(col.id==='name')   return `<td class="bold">${c.name}</td>`;
+      if(col.id==='age')    return `<td style="text-align:center">${ageFromDob(c.dob)}</td>`;
+      if(col.id==='phone')  return `<td class="mono">${c.phone}</td>`;
+      if(col.id==='phone2') return `<td class="mono">${c.phone2||''}</td>`;
+      if(col.id==='group')  return `<td class="sml">${c.subGroup||'Juniors'}</td>`;
+      if(col.id==='weeks')  return `<td class="sml">${wkRangeLabel(c.weekStart,c.weekEnd)}</td>`;
+      if(col.id==='type')   return `<td class="sml">${c.subType==='weekly'?'Weekly':'Daily'}</td>`;
+      if(col.id==='notes')  return `<td class="it">${c.notes||''}</td>`;
+      return '<td></td>';
+    }).join('');
+    return `<tr><td class="num">${i+1}</td>${cells}</tr>`;
+  }).join('');
+
+  const colCount = cols.length + 1;
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LSC — ${label}</title>
+<style>${basePageCSS(accent,gradEnd)}</style></head><body>
+<div class="hdr">
+  <div><div class="hdr-title">&#x26FA; Life School Camps</div><div class="hdr-sub">${label}</div></div>
+  <div style="text-align:right"><div class="badge">${children.length} children</div>
+    <div style="color:rgba(255,255,255,.7);font-size:11px;margin-top:5px">${exported}</div></div>
+</div>
+<div class="notice">&#x1F512; Admin reference — internal use only</div>
+<div class="wrap"><table>
+  <thead><tr>${headCells}</tr></thead>
+  <tbody>${bodyRows}
+  <tr class="tot-row"><td colspan="${colCount}" style="text-align:right">Total: ${children.length} children</td></tr>
+  </tbody>
+</table></div>
+<div class="footer">Life School Camps &mdash; ${exported}</div>
+
+<!-- SYNC MODAL -->
+<div class="sync-overlay" id="sync-overlay">
+  <div class="sync-modal">
+    <div class="sync-hdr">
+      <div class="sync-hdr-title">&#x2601;&#xFE0F; Sync &amp; Backup</div>
+      <button class="close-btn" onclick="closeSyncModal()">&#x2715;</button>
+    </div>
+    <div class="sync-body">
+
+      <!-- Google Drive section -->
+      <div class="sync-section">
+        <div class="sync-section-title">
+          <svg width="16" height="16" viewBox="0 0 87.3 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H.1c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+            <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L1.2 48.5c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/>
+            <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 11.2z" fill="#ea4335"/>
+            <path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+            <path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+            <path d="M73.4 26.5l-12.65-21.9c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.15 28H87.2c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+          </svg>
+          Google Drive Sync
+        </div>
+        <div class="drive-setup" id="drive-setup-notice">
+          &#x2139;&#xFE0F; Paste your Google OAuth Client ID to enable Drive sync.
+          <a href="https://console.cloud.google.com" target="_blank">Get it here</a> —
+          see setup guide below.
+        </div>
+        <div class="client-id-wrap">
+          <input class="client-id-input" id="gd-client-id"
+            placeholder="Paste Client ID here  (xxxx.apps.googleusercontent.com)"
+            oninput="saveClientId()">
+          <button onclick="gdSignIn()" style="padding:9px 14px;background:#1a73e8;color:#fff;
+            border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+            font-family:var(--font);white-space:nowrap">Sign In</button>
+        </div>
+        <div id="gd-user" style="font-size:12px;color:#27ae60;font-weight:600;
+          margin-top:6px;display:none"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="sync-btn sync-btn-drive" id="btn-gd-save"
+            onclick="gdSaveData()" disabled style="flex:1">
+            &#x2191; Save to Drive
+          </button>
+          <button class="sync-btn sync-btn-restore" id="btn-gd-load"
+            onclick="gdLoadData()" disabled style="flex:1">
+            &#x2193; Load from Drive
+          </button>
+        </div>
+        <div id="gd-status" class="sync-status"></div>
+      </div>
+
+      <div style="border-top:2px solid #f0f0f0;margin-bottom:18px"></div>
+
+      <!-- Local backup section -->
+      <div class="sync-section">
+        <div class="sync-section-title">&#x1F4BE; Local Backup</div>
+        <button class="sync-btn sync-btn-backup" onclick="exportBackup()">
+          &#x2B07; Export Backup File (.json)
+        </button>
+        <button class="sync-btn sync-btn-restore" onclick="document.getElementById('restore-file').click()">
+          &#x2B06; Import Backup File
+        </button>
+        <input type="file" id="restore-file" accept=".json" style="display:none"
+          onchange="importBackup(this)">
+        <div id="backup-status" class="sync-status"></div>
+      </div>
+
+      <div style="border-top:2px solid #f0f0f0;margin-bottom:14px"></div>
+
+      <!-- Setup guide -->
+      <details style="margin-bottom:4px">
+        <summary style="font-size:12px;font-weight:700;color:#1a73e8;cursor:pointer;padding:4px 0">
+          &#x1F4D6; Google Drive Setup Guide (5 min)
+        </summary>
+        <ol style="font-size:12px;color:#555;line-height:2;padding:10px 0 0 18px">
+          <li>Go to <a href="https://console.cloud.google.com" target="_blank" style="color:#1a73e8;font-weight:700">console.cloud.google.com</a></li>
+          <li>Click <strong>Create Project</strong> → name it "Life School Camps" → Create</li>
+          <li>Go to <strong>APIs &amp; Services → Library</strong></li>
+          <li>Search <strong>"Google Drive API"</strong> → Enable it</li>
+          <li>Go to <strong>APIs &amp; Services → Credentials</strong></li>
+          <li>Click <strong>Create Credentials → OAuth client ID</strong></li>
+          <li>Application type: <strong>Web application</strong></li>
+          <li>Under "Authorised JavaScript origins" add: <strong>null</strong> (for local files) and your domain if you host it</li>
+          <li>Click Create → copy the <strong>Client ID</strong></li>
+          <li>Paste it in the box above → click Sign In</li>
+          <li>Sign in with your Google account → done!</li>
+        </ol>
+        <div style="background:#fde8e8;border-radius:8px;padding:8px 12px;
+          font-size:11px;color:#e74c3c;margin-top:8px;font-weight:600">
+          &#x26A0;&#xFE0F; Important: In the OAuth consent screen, add your Gmail as a
+          "Test user" so you can use it before publishing.
+        </div>
+      </details>
+
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file input for restore -->
+<input type="file" id="restore-file-hidden" accept=".json" style="display:none">
+</body></html>`;
+}
+
+// ── BUILD SCHOOL PAGE ─────────────────────────────────────────────────────────
+function buildSchoolPage() {
+  ensureFinanceData();
+  const wi     = schWeekIdx;
+  const wk     = 'W'+(wi+1);
+  const camp   = schCamp;
+  const wObj   = WEEKS[wi];
+  const accent = camp==='Shorouk'?'#8E44AD':'#E67E22';
+  const gradEnd= camp==='Shorouk'?'#A569BD':'#F39C12';
+  const exported = new Date().toLocaleDateString('en-GB');
+
+  // children enrolled this week for this camp
+  const allChildren = camp==='10th'
+    ? [...DB.juniors.map(c=>({...c,grpLabel:'Juniors'})), ...DB.seniors.map(c=>({...c,grpLabel:'Seniors'}))]
+    : DB.shorouk.map(c=>({...c,grpLabel:c.subGroup||'Juniors'}));
+
+  const inWeek = allChildren.filter(c=>{
+    if(c.subType==='monthly'){
+      const periods=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd}];
+      return periods.some(p=>weekOverlapsMonthPeriod(wi,p.start,p.end));
+    }
+    return c.weekStart!=null&&c.weekEnd!=null&&wi>=c.weekStart&&wi<=c.weekEnd;
+  });
+
+  // school pct for this week
+  const pct      = (DB.finances[camp]&&DB.finances[camp][wk]&&DB.finances[camp][wk].schoolPct) || (camp==='Shorouk'?50:35);
+  const totalRev = inWeek.reduce((s,c)=>{
+    if(c.subType==='daily') return s+c.totalPaid;
+    const nw=c.weekEnd-c.weekStart+1; return s+(nw>0?c.totalPaid/nw:0);
+  },0);
+  const schoolTotal = Math.round(totalRev * pct / 100);
+
+  const cols = SCH_COLS.filter(c=>schColState[c.id]);
+  const headCells = ['#', 'Name', ...cols.filter(c=>c.id!=='name').map(c=>`<th>${c.label}</th>`)].map(h=>`<th>${h}</th>`).join('');
+
+  const bodyRows = inWeek.map((c,i)=>{
+    let amt=0;
+    if(c.subType==='daily') amt=c.totalPaid;
+    else if(c.subType==='monthly'){
+      const periods=(c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd,paid:c.totalPaid}];
+      periods.forEach(p=>{ if(weekOverlapsMonthPeriod(wi,p.start,p.end)) amt+=(p.paid||0)/Math.max(monthlyWeeksCount(p.start,p.end),1); });
+      amt=Math.round(amt);
+    } else {
+      const nw=c.weekEnd-c.weekStart+1;
+      amt=nw>0?Math.round(c.totalPaid/nw):0;
+    }
+    const sch = Math.round(amt*pct/100);
+    const cells = cols.filter(col=>col.id!=='name').map(col=>{
+      if(col.id==='age')   return `<td style="text-align:center">${ageFromDob(c.dob)}</td>`;
+      if(col.id==='type')  return `<td class="sml">${c.subType==='weekly'?'Weekly':'Daily'}</td>`;
+      if(col.id==='paid')  return `<td style="font-weight:700;color:#27ae60">${Math.round(amt).toLocaleString()} EGP</td>`;
+      if(col.id==='share') return `<td style="font-weight:700;color:${accent}">${sch.toLocaleString()} EGP</td>`;
+      if(col.id==='notes') return `<td class="it">${c.notes||''}</td>`;
+      return '<td></td>';
+    }).join('');
+    return `<tr><td class="num">${i+1}</td><td class="bold">${c.name}</td>${cells}</tr>`;
+  }).join('');
+
+  const colCount = cols.length + 1;
+  const campLabel = camp==='Shorouk'?'Shorouk Camp':'10th Camp';
+
+  // summary box
+  const summaryRows = [
+    ['Total children this week', inWeek.length],
+    ['Total revenue', Math.round(totalRev).toLocaleString()+' EGP'],
+    ['School percentage', pct+'%'],
+    ['School share', schoolTotal.toLocaleString()+' EGP'],
+  ].map(([k,v])=>`<tr><td style="padding:8px 14px;color:#555;border-bottom:1px solid #f0f6f7">${k}</td>
+    <td style="padding:8px 14px;font-weight:700;color:${accent};text-align:right;border-bottom:1px solid #f0f6f7">${v}</td></tr>`).join('');
+
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LSC — School Report ${wk}</title>
+<style>${basePageCSS(accent,gradEnd)}
+.summary-box{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.08);margin-bottom:14px;}
+.summary-title{background:${accent};color:#fff;padding:10px 14px;font-weight:800;font-size:14px;}
+</style></head><body>
+<div class="hdr">
+  <div>
+    <div class="hdr-title">&#x26FA; Life School Camps</div>
+    <div class="hdr-sub">${campLabel} &mdash; School Report</div>
+    <div class="hdr-sub" style="font-size:12px;margin-top:2px;opacity:.8">${wObj.label} &mdash; ${wObj.days===4?'4 days':'Sun&ndash;Thu'}</div>
+  </div>
+  <div style="text-align:right">
+    <div class="badge">${inWeek.length} enrolled</div>
+    <div style="color:rgba(255,255,255,.7);font-size:11px;margin-top:5px">${exported}</div>
+  </div>
+</div>
+<div class="summary-box">
+  <div class="summary-title">&#x1F4CA; Week Summary</div>
+  <table>${summaryRows}</table>
+</div>
+<div class="wrap"><table>
+  <thead><tr>${headCells}</tr></thead>
+  <tbody>${bodyRows}
+  <tr class="tot-row">
+    <td colspan="${colCount-2}" style="text-align:right">Totals:</td>
+    ${schColState['paid']?`<td style="color:#27ae60">${Math.round(totalRev).toLocaleString()} EGP</td>`:''}
+    ${schColState['share']?`<td style="color:${accent}">${schoolTotal.toLocaleString()} EGP</td>`:''}
+    ${schColState['notes']?'<td></td>':''}
+  </tr>
+  </tbody>
+</table></div>
+<div class="footer">Life School Camps &mdash; ${campLabel} &mdash; ${exported} &mdash; School Copy</div>
+
+<!-- SYNC MODAL -->
+<div class="sync-overlay" id="sync-overlay">
+  <div class="sync-modal">
+    <div class="sync-hdr">
+      <div class="sync-hdr-title">&#x2601;&#xFE0F; Sync &amp; Backup</div>
+      <button class="close-btn" onclick="closeSyncModal()">&#x2715;</button>
+    </div>
+    <div class="sync-body">
+
+      <!-- Google Drive section -->
+      <div class="sync-section">
+        <div class="sync-section-title">
+          <svg width="16" height="16" viewBox="0 0 87.3 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H.1c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+            <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L1.2 48.5c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/>
+            <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 11.2z" fill="#ea4335"/>
+            <path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+            <path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+            <path d="M73.4 26.5l-12.65-21.9c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.15 28H87.2c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+          </svg>
+          Google Drive Sync
+        </div>
+        <div class="drive-setup" id="drive-setup-notice">
+          &#x2139;&#xFE0F; Paste your Google OAuth Client ID to enable Drive sync.
+          <a href="https://console.cloud.google.com" target="_blank">Get it here</a> —
+          see setup guide below.
+        </div>
+        <div class="client-id-wrap">
+          <input class="client-id-input" id="gd-client-id"
+            placeholder="Paste Client ID here  (xxxx.apps.googleusercontent.com)"
+            oninput="saveClientId()">
+          <button onclick="gdSignIn()" style="padding:9px 14px;background:#1a73e8;color:#fff;
+            border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+            font-family:var(--font);white-space:nowrap">Sign In</button>
+        </div>
+        <div id="gd-user" style="font-size:12px;color:#27ae60;font-weight:600;
+          margin-top:6px;display:none"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="sync-btn sync-btn-drive" id="btn-gd-save"
+            onclick="gdSaveData()" disabled style="flex:1">
+            &#x2191; Save to Drive
+          </button>
+          <button class="sync-btn sync-btn-restore" id="btn-gd-load"
+            onclick="gdLoadData()" disabled style="flex:1">
+            &#x2193; Load from Drive
+          </button>
+        </div>
+        <div id="gd-status" class="sync-status"></div>
+      </div>
+
+      <div style="border-top:2px solid #f0f0f0;margin-bottom:18px"></div>
+
+      <!-- Local backup section -->
+      <div class="sync-section">
+        <div class="sync-section-title">&#x1F4BE; Local Backup</div>
+        <button class="sync-btn sync-btn-backup" onclick="exportBackup()">
+          &#x2B07; Export Backup File (.json)
+        </button>
+        <button class="sync-btn sync-btn-restore" onclick="document.getElementById('restore-file').click()">
+          &#x2B06; Import Backup File
+        </button>
+        <input type="file" id="restore-file" accept=".json" style="display:none"
+          onchange="importBackup(this)">
+        <div id="backup-status" class="sync-status"></div>
+      </div>
+
+      <div style="border-top:2px solid #f0f0f0;margin-bottom:14px"></div>
+
+      <!-- Setup guide -->
+      <details style="margin-bottom:4px">
+        <summary style="font-size:12px;font-weight:700;color:#1a73e8;cursor:pointer;padding:4px 0">
+          &#x1F4D6; Google Drive Setup Guide (5 min)
+        </summary>
+        <ol style="font-size:12px;color:#555;line-height:2;padding:10px 0 0 18px">
+          <li>Go to <a href="https://console.cloud.google.com" target="_blank" style="color:#1a73e8;font-weight:700">console.cloud.google.com</a></li>
+          <li>Click <strong>Create Project</strong> → name it "Life School Camps" → Create</li>
+          <li>Go to <strong>APIs &amp; Services → Library</strong></li>
+          <li>Search <strong>"Google Drive API"</strong> → Enable it</li>
+          <li>Go to <strong>APIs &amp; Services → Credentials</strong></li>
+          <li>Click <strong>Create Credentials → OAuth client ID</strong></li>
+          <li>Application type: <strong>Web application</strong></li>
+          <li>Under "Authorised JavaScript origins" add: <strong>null</strong> (for local files) and your domain if you host it</li>
+          <li>Click Create → copy the <strong>Client ID</strong></li>
+          <li>Paste it in the box above → click Sign In</li>
+          <li>Sign in with your Google account → done!</li>
+        </ol>
+        <div style="background:#fde8e8;border-radius:8px;padding:8px 12px;
+          font-size:11px;color:#e74c3c;margin-top:8px;font-weight:600">
+          &#x26A0;&#xFE0F; Important: In the OAuth consent screen, add your Gmail as a
+          "Test user" so you can use it before publishing.
+        </div>
+      </details>
+
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file input for restore -->
+<input type="file" id="restore-file-hidden" accept=".json" style="display:none">
+</body></html>`;
+}
+
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SYNC & BACKUP
+// ═══════════════════════════════════════════════════════════════════════════
+
+const BACKUP_VERSION = '1.0';
+const GD_FILE_NAME   = 'LSC_data.json';
+const GD_SCOPE       = 'https://www.googleapis.com/auth/drive.appdata';
+
+let gdToken      = null;  // Google access token
+let gdFileId     = null;  // Drive file ID once found/created
+
+// ── Modal open/close ─────────────────────────────────────────────────────────
+function openSyncModal() {
+  // Load saved client ID
+  const saved = localStorage.getItem('lsc_client_id') || '';
+  const el = document.getElementById('gd-client-id');
+  if(el) el.value = saved;
+  if(saved) {
+    document.getElementById('drive-setup-notice').style.display = 'none';
+  }
+  document.getElementById('sync-overlay').classList.add('open');
+}
+function closeSyncModal() {
+  document.getElementById('sync-overlay').classList.remove('open');
+}
+
+// ── Client ID persistence ─────────────────────────────────────────────────────
+function saveClientId() {
+  const val = (document.getElementById('gd-client-id')?.value || '').trim();
+  localStorage.setItem('lsc_client_id', val);
+  if(val) document.getElementById('drive-setup-notice').style.display = 'none';
+  else document.getElementById('drive-setup-notice').style.display = 'block';
+}
+
+// ── Google OAuth ──────────────────────────────────────────────────────────────
+function getClientId() {
+  return (document.getElementById('gd-client-id')?.value || localStorage.getItem('lsc_client_id') || '').trim();
+}
+
+function gdSignIn() {
+  const clientId = getClientId();
+  if(!clientId) {
+    setGdStatus('Please paste your Client ID first', 'err');
+    return;
+  }
+  // Build OAuth URL for implicit flow
+  const params = new URLSearchParams({
+    client_id:     clientId,
+    redirect_uri:  window.location.href.split('?')[0].split('#')[0],
+    response_type: 'token',
+    scope:         GD_SCOPE,
+    prompt:        'select_account',
+  });
+  const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
+  // Open popup
+  const popup = window.open(authUrl, 'gdauth',
+    'width=500,height=600,scrollbars=yes,resizable=yes');
+  if(!popup) {
+    // Fallback: redirect
+    setGdStatus('Opening Google sign-in...', 'loading');
+    sessionStorage.setItem('lsc_oauth_return', '1');
+    window.location.href = authUrl;
+    return;
+  }
+  // Poll for token in popup URL
+  const poll = setInterval(() => {
+    try {
+      const hash = popup.location.hash;
+      if(hash && hash.includes('access_token')) {
+        clearInterval(poll);
+        popup.close();
+        const p = new URLSearchParams(hash.slice(1));
+        gdToken = p.get('access_token');
+        onGdSignedIn();
+      }
+    } catch(e) { /* cross-origin, keep polling */ }
+    if(popup.closed) clearInterval(poll);
+  }, 500);
+}
+
+// Check if we returned from OAuth redirect (non-popup fallback)
+function checkOAuthReturn() {
+  const hash = window.location.hash;
+  if(hash && hash.includes('access_token') && sessionStorage.getItem('lsc_oauth_return')) {
+    sessionStorage.removeItem('lsc_oauth_return');
+    const p = new URLSearchParams(hash.slice(1));
+    gdToken = p.get('access_token');
+    if(gdToken) {
+      openSyncModal();
+      onGdSignedIn();
+    }
+    // Clean hash from URL
+    history.replaceState(null, '', window.location.pathname);
+  }
+}
+
+function onGdSignedIn() {
+  // Get user email
+  fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: { Authorization: 'Bearer ' + gdToken }
+  }).then(r => r.json()).then(info => {
+    const userEl = document.getElementById('gd-user');
+    if(userEl) {
+      userEl.style.display = 'block';
+      userEl.textContent = '✅ Signed in as ' + (info.email || 'unknown');
+    }
+    document.getElementById('btn-gd-save').disabled = false;
+    document.getElementById('btn-gd-load').disabled = false;
+    setGdStatus('Connected! You can now save or load data.', 'ok');
+  }).catch(() => {
+    setGdStatus('Signed in. Ready to sync.', 'ok');
+    document.getElementById('btn-gd-save').disabled = false;
+    document.getElementById('btn-gd-load').disabled = false;
+  });
+}
+
+// ── Drive file helpers ────────────────────────────────────────────────────────
+async function gdFindFile() {
+  const r = await fetch(
+    "https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='" + GD_FILE_NAME + "'&fields=files(id,name,modifiedTime)",
+    { headers: { Authorization: 'Bearer ' + gdToken } }
+  );
+  const d = await r.json();
+  return (d.files && d.files.length > 0) ? d.files[0] : null;
+}
+
+async function gdSaveData() {
+  if(!gdToken) { setGdStatus('Please sign in first', 'err'); return; }
+  setGdStatus('Saving to Google Drive...', 'loading');
+  document.getElementById('btn-gd-save').disabled = true;
+
+  try {
+    const payload = JSON.stringify({
+      version: BACKUP_VERSION,
+      savedAt: new Date().toISOString(),
+      data: DB
+    }, null, 2);
+
+    const existing = await gdFindFile();
+
+    let url, method;
+    if(existing) {
+      gdFileId = existing.id;
+      url    = 'https://www.googleapis.com/upload/drive/v3/files/' + gdFileId + '?uploadType=media';
+      method = 'PATCH';
+    } else {
+      // Create with metadata first
+      const meta = await fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + gdToken,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: GD_FILE_NAME, parents: ['appDataFolder'] })
+      });
+      const metaJson = await meta.json();
+      gdFileId = metaJson.id;
+      url    = 'https://www.googleapis.com/upload/drive/v3/files/' + gdFileId + '?uploadType=media';
+      method = 'PATCH';
+    }
+
+    const res = await fetch(url, {
+      method,
+      headers: {
+        Authorization: 'Bearer ' + gdToken,
+        'Content-Type': 'application/json'
+      },
+      body: payload
+    });
+
+    if(res.ok) {
+      const now = new Date().toLocaleTimeString();
+      setGdStatus('✅ Saved to Drive at ' + now, 'ok');
+      showToast('✅ Saved to Google Drive!');
+    } else {
+      const err = await res.json();
+      setGdStatus('Error: ' + (err.error?.message || 'Save failed'), 'err');
+    }
+  } catch(e) {
+    setGdStatus('Error: ' + e.message, 'err');
+  }
+  document.getElementById('btn-gd-save').disabled = false;
+}
+
+async function gdLoadData() {
+  if(!gdToken) { setGdStatus('Please sign in first', 'err'); return; }
+  setGdStatus('Loading from Google Drive...', 'loading');
+  document.getElementById('btn-gd-load').disabled = true;
+
+  try {
+    const file = await gdFindFile();
+    if(!file) {
+      setGdStatus('No saved data found on Drive. Save first from another device.', 'err');
+      document.getElementById('btn-gd-load').disabled = false;
+      return;
+    }
+    gdFileId = file.id;
+    const res = await fetch(
+      'https://www.googleapis.com/drive/v3/files/' + gdFileId + '?alt=media',
+      { headers: { Authorization: 'Bearer ' + gdToken } }
+    );
+    const backup = await res.json();
+    if(!backup.data) {
+      setGdStatus('Invalid backup file on Drive', 'err');
+      document.getElementById('btn-gd-load').disabled = false;
+      return;
+    }
+    const savedAt = backup.savedAt ? new Date(backup.savedAt).toLocaleString() : 'unknown';
+    if(!window.confirm('Load data saved on ' + savedAt + '?\n\nThis will REPLACE all current data on this device.')) {
+      setGdStatus('Load cancelled', 'err');
+      document.getElementById('btn-gd-load').disabled = false;
+      return;
+    }
+    applyBackupData(backup.data);
+    setGdStatus('✅ Loaded from Drive (saved ' + savedAt + ')', 'ok');
+    showToast('✅ Data loaded from Google Drive!');
+  } catch(e) {
+    setGdStatus('Error: ' + e.message, 'err');
+  }
+  document.getElementById('btn-gd-load').disabled = false;
+}
+
+function setGdStatus(msg, type) {
+  const el = document.getElementById('gd-status');
+  if(!el) return;
+  el.textContent = msg;
+  el.className = 'sync-status ' + type;
+}
+
+// ── Local backup ──────────────────────────────────────────────────────────────
+function exportBackup() {
+  const payload = JSON.stringify({
+    version: BACKUP_VERSION,
+    savedAt: new Date().toISOString(),
+    data: DB
+  }, null, 2);
+
+  const blob = new Blob([payload], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href     = url;
+  a.download = 'LSC_backup_' + date + '.json';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); document.body.removeChild(a); }, 1000);
+
+  const el = document.getElementById('backup-status');
+  if(el) { el.textContent = '✅ Backup file downloaded!'; el.className = 'sync-status ok'; }
+  showToast('✅ Backup downloaded!');
+}
+
+function importBackup(input) {
+  const file = input.files[0];
+  if(!file) return;
+  const el = document.getElementById('backup-status');
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const backup = JSON.parse(e.target.result);
+      if(!backup.data) throw new Error('Invalid backup file');
+      const savedAt = backup.savedAt ? new Date(backup.savedAt).toLocaleString() : 'unknown';
+      if(!window.confirm('Restore backup from ' + savedAt + '?\n\nThis will REPLACE all current data.')) {
+        if(el) { el.textContent = 'Import cancelled'; el.className = 'sync-status err'; }
+        return;
+      }
+      applyBackupData(backup.data);
+      if(el) { el.textContent = '✅ Data restored from backup!'; el.className = 'sync-status ok'; }
+      showToast('✅ Backup restored!');
+    } catch(err) {
+      if(el) { el.textContent = 'Error: ' + err.message; el.className = 'sync-status err'; }
+      showToast('Invalid backup file', 'error');
+    }
+  };
+  reader.readAsText(file);
+  input.value = ''; // reset so same file can be imported again
+}
+
+function applyBackupData(data) {
+  // Merge carefully — preserve structure
+  DB.juniors    = data.juniors    || [];
+  DB.seniors    = data.seniors    || [];
+  DB.shorouk    = data.shorouk    || [];
+  DB.freelancers= data.freelancers|| {};
+  DB.expenses   = data.expenses   || {'10th':{},'Shorouk':{},'General':[]};
+  DB.finances   = data.finances   || {'10th':{},'Shorouk':{}};
+  saveData();
+  // Refresh all views
+  renderDash10();
+  renderDashSh();
+  const activeView = document.querySelector('.view.active');
+  if(activeView) {
+    const id = activeView.id.replace('view-','');
+    if(id==='juniors') renderList('juniors');
+    else if(id==='seniors') renderList('seniors');
+    else if(id==='shorouk') renderList('shorouk');
+    else if(id==='weeks') renderWeeks();
+    else if(id==='freelancers') renderFreelancers();
+    else if(id==='expenses') renderExpenses();
+    else if(id==='finances') renderFinances();
+  }
+}
+
+// Check OAuth return on page load
+checkOAuthReturn();
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PIN LOCK
+// ═══════════════════════════════════════════════════════════════════════════
+(function(){
+  // Simple hash — not cryptographic but hides the PIN from casual inspection
+  function hashPin(pin) {
+    let h = 0x811c9dc5;
+    for(let i=0;i<pin.length;i++){
+      h ^= pin.charCodeAt(i);
+      h = (h * 0x01000193) >>> 0;
+    }
+    return h.toString(16);
+  }
+
+  // Stored hash — change the PIN by updating this value
+  // Current PIN: 1234 (change below to your desired PIN's hash)
+  // To get hash of a new PIN, open browser console and run:
+  //   let h=0x811c9dc5; '1234'.split('').forEach(c=>{h^=c.charCodeAt(0);h=(h*0x01000193)>>>0}); console.log(h.toString(16))
+  const CORRECT_HASH = hashPin('2008'); // ← CHANGE THIS
+
+  // Check if already unlocked this session
+  if(sessionStorage.getItem('lsc_unlocked')==='1') {
+    document.getElementById('pin-lock').style.display='none';
+    return;
+  }
+
+  let current = '';
+  const MAX = 4;
+
+  window.pinKey = function(d) {
+    if(current.length >= MAX) return;
+    current += d;
+    updateDots();
+    if(current.length === MAX) checkPin();
+  };
+
+  window.pinDel = function() {
+    if(current.length === 0) return;
+    current = current.slice(0,-1);
+    updateDots();
+    document.getElementById('pin-error').textContent = '';
+  };
+
+  function updateDots() {
+    for(let i=0;i<MAX;i++){
+      const el = document.getElementById('pd'+i);
+      if(el) el.className = 'pin-dot' + (i < current.length ? ' filled' : '');
+    }
+  }
+
+  function checkPin() {
+    if(hashPin(current) === CORRECT_HASH) {
+      sessionStorage.setItem('lsc_unlocked','1');
+      const lock = document.getElementById('pin-lock');
+      lock.style.transition = 'opacity .4s ease';
+      lock.style.opacity = '0';
+      setTimeout(()=>{ lock.style.display='none'; }, 400);
+    } else {
+      document.getElementById('pin-error').textContent = 'Incorrect PIN — try again';
+      current = '';
+      updateDots();
+      // shake the dots
+      const dots = document.getElementById('pin-dots');
+      if(dots){ dots.style.animation='none'; setTimeout(()=>dots.style.animation='pin-shake .3s ease',10); }
+    }
+  }
+
+  // Also support keyboard input
+  document.addEventListener('keydown', function(e){
+    if(document.getElementById('pin-lock').style.display==='none') return;
+    if(e.key>='0'&&e.key<='9') pinKey(e.key);
+    else if(e.key==='Backspace') pinDel();
+  });
+})();
+
+</script>
+
+<!-- PRINT AREA -->
+<div id="print-area"></div>
+
+<!-- SHARE MODAL -->
+<div class="share-modal-overlay" id="share-modal-outer">
+  <div class="share-modal">
+    <div class="share-hdr">
+      <div class="share-hdr-title">&#x1F4CB; Export / Print</div>
+      <button class="close-btn" onclick="closeShareModal()">&#x2715;</button>
+    </div>
+    <div class="share-body" id="share-body-content">
+      <!-- Step 1: choose template -->
+      <div id="step-template">
+        <div class="share-section-lbl">What do you want to export?</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <div class="export-template-card" onclick="chooseTemplate('admin')" id="tpl-admin">
+            <div style="font-size:24px">&#x1F512;</div>
+            <div>
+              <div style="font-weight:800;font-size:14px;color:#006D77">Admin / Team List</div>
+              <div style="font-size:12px;color:#888;margin-top:3px">Names, phones, notes — for internal team use. Choose your columns.</div>
+            </div>
+          </div>
+          <div class="export-template-card" onclick="chooseTemplate('school')" id="tpl-school">
+            <div style="font-size:24px">&#x1F3EB;</div>
+            <div>
+              <div style="font-weight:800;font-size:14px;color:#E67E22">School Weekly Report</div>
+              <div style="font-size:12px;color:#888;margin-top:3px">Children names, age, payment &amp; school share — per week, for the school.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2a: Admin customiser -->
+      <div id="step-admin" style="display:none">
+        <button onclick="backToTemplates()" style="background:none;border:none;color:#006D77;font-weight:700;cursor:pointer;font-size:13px;font-family:var(--font);margin-bottom:12px;padding:0">&#x2190; Back</button>
+        <div class="share-section-lbl">Choose list</div>
+        <div class="share-pill-row">
+          <label class="share-pill on" id="adm-juniors" onclick="setAdmList('juniors')">&#x1F476; Juniors</label>
+          <label class="share-pill"    id="adm-seniors" onclick="setAdmList('seniors')">&#x1F466; Seniors</label>
+          <label class="share-pill"    id="adm-shorouk" onclick="setAdmList('shorouk')">&#x1F3E1; Shorouk</label>
+        </div>
+        <div class="share-section-lbl" style="margin-top:14px">Scope</div>
+        <div class="share-pill-row" style="margin-bottom:4px">
+          <label class="share-pill on" id="adm-scope-all"  onclick="setAdmScope('all')">&#x1F4CB; All Children</label>
+          <label class="share-pill"    id="adm-scope-week" onclick="setAdmScope('week')">&#x1F5D3; By Week</label>
+        </div>
+        <div id="adm-week-picker" style="display:none;margin-top:8px">
+          <div style="font-size:11px;color:#888;font-weight:600;margin-bottom:6px">Choose week:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px" id="adm-week-btns"></div>
+          <div id="adm-week-count" style="font-size:12px;color:#006D77;font-weight:600;margin-top:6px"></div>
+        </div>
+        <div class="share-section-lbl" style="margin-top:14px">Choose columns to include</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px" id="col-toggles">
+          <!-- injected by JS -->
+        </div>
+        <div class="share-section-lbl" style="margin-top:14px">Output format</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="share-action-btn" style="background:#006D77;color:#fff" onclick="generateExport('admin','link')">&#x1F517; Shareable Link</button>
+          <button class="share-action-btn" style="background:#FFC300;color:#1a1a2e" onclick="generateExport('admin','print')">&#x1F4C4; Print / PDF</button>
+        </div>
+        <div id="share-link-result" style="display:none;margin-top:12px">
+          <div class="share-section-lbl">Your link</div>
+          <div class="share-link-box" id="share-link-text"></div>
+          <div style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap">
+            <button onclick="copyShareLink()" style="padding:8px 16px;background:#006D77;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:var(--font);font-size:13px">&#x1F4CB; Copy</button>
+            <div id="share-copy-confirm" style="display:none;font-size:12px;color:#27ae60;font-weight:600">&#x2705; Copied!</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2b: School report customiser -->
+      <div id="step-school" style="display:none">
+        <button onclick="backToTemplates()" style="background:none;border:none;color:#006D77;font-weight:700;cursor:pointer;font-size:13px;font-family:var(--font);margin-bottom:12px;padding:0">&#x2190; Back</button>
+        <div class="share-section-lbl">Choose camp</div>
+        <div class="share-pill-row">
+          <label class="share-pill on" id="sch-10th"   onclick="setSchCamp('10th')">&#x1F3D5; 10th Camp</label>
+          <label class="share-pill"    id="sch-shorouk" onclick="setSchCamp('Shorouk')">&#x1F3E1; Shorouk</label>
+        </div>
+        <div class="share-section-lbl" style="margin-top:14px">Choose week</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="sch-week-btns"></div>
+        <div class="share-section-lbl" style="margin-top:14px">Include columns</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="sch-col-toggles">
+          <!-- injected by JS -->
+        </div>
+        <div class="share-section-lbl" style="margin-top:14px">Output format</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="share-action-btn" style="background:#E67E22;color:#fff" onclick="generateExport('school','print')">&#x1F4C4; Print / PDF</button>
+          <button class="share-action-btn" style="background:#FFC300;color:#1a1a2e" onclick="generateExport('school','link')">&#x1F517; Shareable Link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SYNC MODAL -->
+<div class="sync-overlay" id="sync-overlay">
+  <div class="sync-modal">
+    <div class="sync-hdr">
+      <div class="sync-hdr-title">&#x2601;&#xFE0F; Sync &amp; Backup</div>
+      <button class="close-btn" onclick="closeSyncModal()">&#x2715;</button>
+    </div>
+    <div class="sync-body">
+
+      <!-- Google Drive section -->
+      <div class="sync-section">
+        <div class="sync-section-title">
+          <svg width="16" height="16" viewBox="0 0 87.3 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H.1c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/>
+            <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L1.2 48.5c-.8 1.4-1.2 2.95-1.2 4.5h27.5z" fill="#00ac47"/>
+            <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.85 11.2z" fill="#ea4335"/>
+            <path d="M43.65 25L57.4 1.2C56.05.4 54.5 0 52.9 0H34.4c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/>
+            <path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/>
+            <path d="M73.4 26.5l-12.65-21.9c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.15 28H87.2c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/>
+          </svg>
+          Google Drive Sync
+        </div>
+        <div class="drive-setup" id="drive-setup-notice">
+          &#x2139;&#xFE0F; Paste your Google OAuth Client ID to enable Drive sync.
+          <a href="https://console.cloud.google.com" target="_blank">Get it here</a> —
+          see setup guide below.
+        </div>
+        <div class="client-id-wrap">
+          <input class="client-id-input" id="gd-client-id"
+            placeholder="Paste Client ID here  (xxxx.apps.googleusercontent.com)"
+            oninput="saveClientId()">
+          <button onclick="gdSignIn()" style="padding:9px 14px;background:#1a73e8;color:#fff;
+            border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+            font-family:var(--font);white-space:nowrap">Sign In</button>
+        </div>
+        <div id="gd-user" style="font-size:12px;color:#27ae60;font-weight:600;
+          margin-top:6px;display:none"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="sync-btn sync-btn-drive" id="btn-gd-save"
+            onclick="gdSaveData()" disabled style="flex:1">
+            &#x2191; Save to Drive
+          </button>
+          <button class="sync-btn sync-btn-restore" id="btn-gd-load"
+            onclick="gdLoadData()" disabled style="flex:1">
+            &#x2193; Load from Drive
+          </button>
+        </div>
+        <div id="gd-status" class="sync-status"></div>
+      </div>
+
+      <div style="border-top:2px solid #f0f0f0;margin-bottom:18px"></div>
+
+      <!-- Local backup section -->
+      <div class="sync-section">
+        <div class="sync-section-title">&#x1F4BE; Local Backup</div>
+        <button class="sync-btn sync-btn-backup" onclick="exportBackup()">
+          &#x2B07; Export Backup File (.json)
+        </button>
+        <button class="sync-btn sync-btn-restore" onclick="document.getElementById('restore-file').click()">
+          &#x2B06; Import Backup File
+        </button>
+        <input type="file" id="restore-file" accept=".json" style="display:none"
+          onchange="importBackup(this)">
+        <div id="backup-status" class="sync-status"></div>
+      </div>
+
+      <div style="border-top:2px solid #f0f0f0;margin-bottom:14px"></div>
+
+      <!-- Setup guide -->
+      <details style="margin-bottom:4px">
+        <summary style="font-size:12px;font-weight:700;color:#1a73e8;cursor:pointer;padding:4px 0">
+          &#x1F4D6; Google Drive Setup Guide (5 min)
+        </summary>
+        <ol style="font-size:12px;color:#555;line-height:2;padding:10px 0 0 18px">
+          <li>Go to <a href="https://console.cloud.google.com" target="_blank" style="color:#1a73e8;font-weight:700">console.cloud.google.com</a></li>
+          <li>Click <strong>Create Project</strong> → name it "Life School Camps" → Create</li>
+          <li>Go to <strong>APIs &amp; Services → Library</strong></li>
+          <li>Search <strong>"Google Drive API"</strong> → Enable it</li>
+          <li>Go to <strong>APIs &amp; Services → Credentials</strong></li>
+          <li>Click <strong>Create Credentials → OAuth client ID</strong></li>
+          <li>Application type: <strong>Web application</strong></li>
+          <li>Under "Authorised JavaScript origins" add: <strong>null</strong> (for local files) and your domain if you host it</li>
+          <li>Click Create → copy the <strong>Client ID</strong></li>
+          <li>Paste it in the box above → click Sign In</li>
+          <li>Sign in with your Google account → done!</li>
+        </ol>
+        <div style="background:#fde8e8;border-radius:8px;padding:8px 12px;
+          font-size:11px;color:#e74c3c;margin-top:8px;font-weight:600">
+          &#x26A0;&#xFE0F; Important: In the OAuth consent screen, add your Gmail as a
+          "Test user" so you can use it before publishing.
+        </div>
+      </details>
+
+    </div>
+  </div>
+</div>
+
+<!-- Hidden file input for restore -->
+<input type="file" id="restore-file-hidden" accept=".json" style="display:none">
+</body>
+</html>
