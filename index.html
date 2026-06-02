@@ -2199,9 +2199,16 @@ function renderFreelancers() {
   const allRows = DB.freelancers[wkKey] || [];
 
   // Apply camp filter
-  const rows = activeFrlCampFilter==='all'
+  const rows = (activeFrlCampFilter==='all'
     ? allRows
-    : allRows.filter(f=>f.camp===activeFrlCampFilter||f.camp==='Both');
+    : allRows.filter(f=>f.camp===activeFrlCampFilter||f.camp==='Both')
+  ).slice().sort((a,b)=>{
+    const mult = frlSortDir==='asc'?1:-1;
+    if(frlSortCol==='name') return mult*(a.name||'').localeCompare(b.name||'','ar');
+    if(frlSortCol==='role') return mult*(a.role||'').localeCompare(b.role||'');
+    if(frlSortCol==='days') return mult*((a.days||0)-(b.days||0));
+    return 0;
+  });
 
   const filteredTotal = rows.reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
   const allTotal      = allRows.reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
@@ -2285,7 +2292,11 @@ function renderFreelancers() {
     ${summaryCards}
     <div class="tbl-wrap"><table>
       <thead><tr>
-        <th>Name</th><th>Role</th><th>Camp</th><th>Days</th><th>Day Rate (EGP)</th><th>Total (EGP)</th><th></th>
+        <th class="th-sort" onclick="sortFrl('name')">Name<span class="sort-icon"></span></th>
+        <th class="th-sort" onclick="sortFrl('role')">Role<span class="sort-icon"></span></th>
+        <th>Camp</th>
+        <th class="th-sort" onclick="sortFrl('days')">Days<span class="sort-icon"></span></th>
+        <th>Day Rate (EGP)</th><th>Total (EGP)</th><th></th>
       </tr></thead>
       <tbody>${tableRows}${totalRow}</tbody>
     </table></div>`;
@@ -2293,6 +2304,15 @@ function renderFreelancers() {
 
 function setFrlCampFilter(f) {
   activeFrlCampFilter = f;
+  renderFreelancers();
+}
+
+let frlSortCol = 'name';
+let frlSortDir = 'asc';
+
+function sortFrl(col) {
+  if(frlSortCol===col) frlSortDir = frlSortDir==='asc'?'desc':'asc';
+  else { frlSortCol=col; frlSortDir='asc'; }
   renderFreelancers();
 }
 function setFrlWeek(i) { activeFreelancerWeek=i; renderFreelancers(); }
