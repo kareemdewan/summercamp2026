@@ -335,6 +335,50 @@ select.inp{cursor:pointer;}
   80%{transform:translateX(6px)}
 }
 .pin-footer { color:rgba(255,255,255,.3);font-size:11px;margin-top:-8px; }
+
+/* ATTENDANCE TAB */
+.att-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
+.att-method-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.att-method-tab{padding:9px 18px;border:2px solid var(--border);border-radius:20px;
+  background:#fff;cursor:pointer;font-family:var(--font);font-size:13px;
+  font-weight:700;color:#888;transition:all .2s;}
+.att-method-tab.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+.att-result-row{display:flex;align-items:center;padding:10px 14px;
+  border-bottom:1px solid #f0f6f7;gap:12px;font-size:13px;}
+.att-result-row:last-child{border-bottom:none;}
+.att-status-badge{padding:3px 10px;border-radius:20px;font-size:11px;
+  font-weight:700;white-space:nowrap;}
+.att-ok   {background:#d4f5ed;color:#006D77;}
+.att-warn {background:#fff3cd;color:#E67E22;}
+.att-miss {background:#fde8e8;color:#e74c3c;}
+.att-new  {background:#e8e8e8;color:#888;}
+.att-stat-card{background:#fff;border-radius:14px;padding:16px 18px;
+  box-shadow:var(--shadow);text-align:center;flex:1;min-width:100px;}
+.att-stat-val{font-size:26px;font-weight:900;line-height:1;}
+.att-stat-lbl{font-size:11px;color:#888;font-weight:600;margin-top:4px;}
+.att-tick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.att-tick-item{display:flex;align-items:center;gap:10px;padding:10px 14px;
+  border:2px solid var(--border);border-radius:12px;cursor:pointer;
+  background:#fff;transition:all .15s;user-select:none;}
+.att-tick-item.checked{background:var(--teal-lt);border-color:var(--teal);}
+.att-tick-item.checked .att-tick-box{background:var(--teal);border-color:var(--teal);}
+.att-tick-item.checked .att-tick-box::after{content:'✓';color:#fff;font-size:12px;font-weight:900;}
+.att-tick-box{width:22px;height:22px;border-radius:6px;border:2px solid #ccc;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.att-tick-name{font-size:13px;font-weight:600;color:var(--dark);flex:1;}
+.att-tick-sub{font-size:11px;color:#888;}
+.att-import-area{width:100%;height:140px;padding:12px;border:2px solid var(--border);
+  border-radius:12px;font-size:13px;font-family:var(--font);outline:none;resize:vertical;
+  transition:border .2s;}
+.att-import-area:focus{border-color:var(--teal);}
+.att-manual-wrap{display:flex;gap:8px;margin-bottom:12px;}
+.att-manual-input{flex:1;padding:11px 14px;border:2px solid var(--border);
+  border-radius:12px;font-size:14px;font-family:var(--font);outline:none;}
+.att-manual-input:focus{border-color:var(--teal);}
+.att-log-wrap{background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);}
+.att-log-hdr{background:var(--teal);color:#fff;padding:12px 16px;
+  font-size:13px;font-weight:800;display:flex;justify-content:space-between;align-items:center;}
+@media(max-width:500px){.att-tick-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -400,6 +444,7 @@ select.inp{cursor:pointer;}
   <button class="nav-btn"         onclick="switchTab('freelancers')">&#x1F464; Staff</button>
   <button class="nav-btn"         onclick="switchTab('expenses')">&#x1F4B8; Expenses</button>
   <button class="nav-btn"         onclick="switchTab('finances')">&#x1F4B0; Finances</button>
+  <button class="nav-btn"         onclick="switchTab('attendance')">&#x1F4CB; Attendance</button>
   <button class="nav-btn"         onclick="doExport()">&#x2B07; Excel</button>
 </div>
 
@@ -477,6 +522,87 @@ select.inp{cursor:pointer;}
 </div>
 
 <!-- WEEKS -->
+
+<!-- ATTENDANCE -->
+<div id="view-attendance" class="view">
+  <!-- Toolbar: week + day + camp -->
+  <div class="att-toolbar">
+    <div>
+      <label style="font-size:11px;font-weight:700;color:#888;display:block;margin-bottom:4px">Week</label>
+      <select class="inp" id="att-week" onchange="renderAttendance()" style="min-width:160px">
+        <!-- filled by JS -->
+      </select>
+    </div>
+    <div>
+      <label style="font-size:11px;font-weight:700;color:#888;display:block;margin-bottom:4px">Day</label>
+      <select class="inp" id="att-day" onchange="renderAttendance()" style="min-width:110px">
+        <!-- filled by JS -->
+      </select>
+    </div>
+    <div>
+      <label style="font-size:11px;font-weight:700;color:#888;display:block;margin-bottom:4px">Camp</label>
+      <select class="inp" id="att-camp" onchange="renderAttendance()" style="min-width:120px">
+        <option value="all">All Camps</option>
+        <option value="10th">10th Camp</option>
+        <option value="Shorouk">Shorouk</option>
+      </select>
+    </div>
+    <button class="hdr-btn" style="align-self:flex-end;font-size:13px;padding:10px 16px"
+      onclick="clearAttendance()">&#x1F5D1; Clear Day</button>
+  </div>
+
+  <!-- Stats row -->
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px" id="att-stats"></div>
+
+  <!-- Method tabs -->
+  <div class="att-method-tabs">
+    <button class="att-method-tab active" id="attm-tick"   onclick="setAttMethod('tick')">&#x2611; Tick List</button>
+    <button class="att-method-tab"        id="attm-manual" onclick="setAttMethod('manual')">&#x1F50D; Manual Search</button>
+    <button class="att-method-tab"        id="attm-import" onclick="setAttMethod('import')">&#x1F4CB; Paste List</button>
+  </div>
+
+  <!-- TICK LIST -->
+  <div id="att-method-tick">
+    <div style="font-size:12px;color:#888;margin-bottom:10px;font-weight:600">
+      Tap a child to mark as present. Shows all children enrolled this week.
+    </div>
+    <div class="att-tick-grid" id="att-tick-grid"></div>
+  </div>
+
+  <!-- MANUAL SEARCH -->
+  <div id="att-method-manual" style="display:none">
+    <div class="att-manual-wrap">
+      <input class="att-manual-input" id="att-manual-input"
+        placeholder="Type child name to check..." oninput="attManualSearch()">
+      <button class="hdr-btn" style="font-size:13px;padding:10px 16px"
+        onclick="attManualSearch()">&#x1F50D; Check</button>
+    </div>
+    <div id="att-manual-results"></div>
+  </div>
+
+  <!-- PASTE LIST -->
+  <div id="att-method-import" style="display:none">
+    <div style="font-size:12px;color:#888;margin-bottom:8px;font-weight:600">
+      Paste a list of names (one per line, or comma separated — from WhatsApp, notes, etc.)
+    </div>
+    <textarea class="att-import-area" id="att-import-input"
+      placeholder="Ahmed Mohamed&#10;Sara Ali&#10;Omar Hassan&#10;..."></textarea>
+    <button class="hdr-btn" style="margin-top:10px;font-size:13px;width:100%;justify-content:center"
+      onclick="attAnalyzeImport()">&#x1F4CA; Analyze List</button>
+    <div id="att-import-results" style="margin-top:14px"></div>
+  </div>
+
+  <!-- RESULTS LOG -->
+  <div class="att-log-wrap" style="margin-top:16px" id="att-log-wrap">
+    <div class="att-log-hdr">
+      <span>&#x1F4CB; Attendance Log — <span id="att-log-date"></span></span>
+      <button onclick="exportAttendance()" style="background:var(--yellow);color:var(--dark);
+        border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;
+        font-family:var(--font)">&#x2B07; Export</button>
+    </div>
+    <div id="att-log-body"></div>
+  </div>
+</div>
 <div id="view-weeks" class="view">
   <div class="month-tabs" id="month-tabs"></div>
   <div id="weeks-content"></div>
@@ -841,21 +967,64 @@ function calcAge(dob){
 function fmtN(n){return Number(Math.round(n)).toLocaleString('en-US');}
 function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 
-function similarity(a,b){
-  a=a.toLowerCase().trim();b=b.toLowerCase().trim();
-  if(a===b)return 1;
-  if(a.includes(b)||b.includes(a))return 0.85;
-  let common=0;
-  const sh=a.length<b.length?a:b,lo=a.length<b.length?b:a;
-  for(const ch of sh)if(lo.includes(ch))common++;
-  return common/lo.length;
+// Levenshtein distance — counts minimum edits between two strings
+function levenshtein(a, b) {
+  a = a.toLowerCase().trim();
+  b = b.toLowerCase().trim();
+  if (a === b) return 0;
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+  const dp = Array.from({length: a.length+1}, (_,i) =>
+    Array.from({length: b.length+1}, (_,j) => i===0?j:j===0?i:0)
+  );
+  for (let i=1;i<=a.length;i++) {
+    for (let j=1;j<=b.length;j++) {
+      if (a[i-1]===b[j-1]) dp[i][j]=dp[i-1][j-1];
+      else dp[i][j]=1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+// Similarity score 0→1 using Levenshtein + substring bonus
+function similarity(a, b) {
+  a = a.toLowerCase().trim();
+  b = b.toLowerCase().trim();
+  if (a === b) return 1;
+  // Exact substring match
+  if (a.includes(b) || b.includes(a)) return 0.9;
+  const maxLen = Math.max(a.length, b.length);
+  if (maxLen === 0) return 1;
+  const dist = levenshtein(a, b);
+  const levScore = 1 - dist / maxLen;
+  // Word-level bonus: compare each word pair
+  const aw = a.split(/\s+/), bw = b.split(/\s+/);
+  let wordBonus = 0;
+  aw.forEach(wa => bw.forEach(wb => {
+    const wDist = levenshtein(wa, wb);
+    const wMax  = Math.max(wa.length, wb.length);
+    if (wMax > 0 && (1-wDist/wMax) > 0.7) wordBonus += 0.1;
+  }));
+  return Math.min(1, levScore + wordBonus);
+}
+
+// Human-readable match quality label
+function matchQuality(score) {
+  if (score >= 0.95) return { label:'Exact match',       color:'var(--green)' };
+  if (score >= 0.80) return { label:'Very close match',  color:'var(--teal)' };
+  if (score >= 0.65) return { label:'Possible match',    color:'var(--orange)' };
+  return                     { label:'Weak match',        color:'#aaa' };
 }
 function matchScore(child,name,dob,phone){
   let score=0;
   const ns=similarity(child.name,name);
-  if(ns>0.6)score+=ns*50;
-  if(dob&&child.dob===dob)score+=30;
-  if(phone&&(child.phone===phone||child.phone2===phone))score+=20;
+  // Levenshtein-based scoring — more granular
+  if(ns>=0.95) score+=55;       // exact / near-exact
+  else if(ns>=0.80) score+=42;  // very close (1-2 char diff)
+  else if(ns>=0.65) score+=28;  // possible
+  else if(ns>=0.50) score+=12;  // weak
+  if(dob&&child.dob===dob)  score+=35;  // DOB is strong signal
+  if(phone&&(child.phone===phone||child.phone2===phone)) score+=25;
   return score;
 }
 
@@ -946,6 +1115,7 @@ function switchTab(id){
   if(id==='freelancers') renderFreelancers();
   if(id==='expenses')    renderExpenses();
   if(id==='finances')    renderFinances();
+  if(id==='attendance')  initAttendance();
 }
 
 // ═══════════════════ DASHBOARD BUILDER ═══════════════════
@@ -2014,56 +2184,117 @@ function weekFinance(wi, camp) {
 // FREELANCERS TAB
 // ═══════════════════════════════════════════════════════════════════════════
 let activeFreelancerWeek = 0; // index
+let activeFrlCampFilter  = 'all'; // 'all' | '10th' | 'Shorouk'
 
 function renderFreelancers() {
   ensureFinanceData();
+
   // Week picker
-  const wpHtml = WEEKS.map((w,i)=>`
+  document.getElementById('frl-week-tabs').innerHTML = WEEKS.map((w,i)=>`
     <button class="month-tab ${i===activeFreelancerWeek?'active':''}"
       onclick="setFrlWeek(${i})" style="min-width:60px;font-size:11px">${w.label.split(':')[0]}</button>
   `).join('');
-  document.getElementById('frl-week-tabs').innerHTML = wpHtml;
 
-  const wk = 'W'+(activeFreelancerWeek+1);
-  const rows = DB.freelancers[wk] || [];
-  const total = rows.reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
+  const wkKey  = 'W'+(activeFreelancerWeek+1);
+  const allRows = DB.freelancers[wkKey] || [];
+
+  // Apply camp filter
+  const rows = activeFrlCampFilter==='all'
+    ? allRows
+    : allRows.filter(f=>f.camp===activeFrlCampFilter||f.camp==='Both');
+
+  const filteredTotal = rows.reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
+  const allTotal      = allRows.reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
+  const t10  = allRows.filter(f=>f.camp==='10th'||f.camp==='Both').reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
+  const tsh  = allRows.filter(f=>f.camp==='Shorouk'||f.camp==='Both').reduce((s,f)=>s+(f.days||0)*(f.dayRate||0),0);
+  const c10  = allRows.filter(f=>f.camp==='10th'||f.camp==='Both').length;
+  const csh  = allRows.filter(f=>f.camp==='Shorouk'||f.camp==='Both').length;
+
+  // Filter buttons
+  const filterBtns = [
+    {id:'all',    label:'🌐 All Camps', color:'#555',         bg:'var(--grey)'},
+    {id:'10th',   label:'🏕️ 10th',      color:'var(--teal)',  bg:'var(--teal-lt)'},
+    {id:'Shorouk',label:'🏡 Shorouk',   color:'#8E44AD',      bg:'var(--purple-lt)'},
+  ].map(f=>{
+    const active = activeFrlCampFilter===f.id;
+    return `<button onclick="setFrlCampFilter('${f.id}')"
+      style="padding:7px 16px;border:2px solid ${active?f.color:'var(--border)'};border-radius:20px;
+      background:${active?f.bg:'#fff'};color:${active?f.color:'#888'};
+      cursor:pointer;font-size:12px;font-weight:700;font-family:var(--font)">${f.label}</button>`;
+  }).join('');
+
+  // Summary cards
+  const summaryCards = allRows.length===0?'': `
+    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <div style="flex:1;min-width:80px;background:#fff;border-radius:12px;padding:12px 14px;
+        box-shadow:var(--shadow);border-top:3px solid #555">
+        <div style="font-size:20px;font-weight:900;color:#555">${allRows.length}</div>
+        <div style="font-size:11px;color:#888;font-weight:600">All Staff</div>
+        <div style="font-size:11px;font-weight:700;color:#555;margin-top:2px">${fmtN(allTotal)} EGP</div>
+      </div>
+      <div style="flex:1;min-width:80px;background:#fff;border-radius:12px;padding:12px 14px;
+        box-shadow:var(--shadow);border-top:3px solid var(--teal)">
+        <div style="font-size:20px;font-weight:900;color:var(--teal)">${c10}</div>
+        <div style="font-size:11px;color:#888;font-weight:600">10th Camp</div>
+        <div style="font-size:11px;font-weight:700;color:var(--teal);margin-top:2px">${fmtN(t10)} EGP</div>
+      </div>
+      <div style="flex:1;min-width:80px;background:#fff;border-radius:12px;padding:12px 14px;
+        box-shadow:var(--shadow);border-top:3px solid #8E44AD">
+        <div style="font-size:20px;font-weight:900;color:#8E44AD">${csh}</div>
+        <div style="font-size:11px;color:#888;font-weight:600">Shorouk</div>
+        <div style="font-size:11px;font-weight:700;color:#8E44AD;margin-top:2px">${fmtN(tsh)} EGP</div>
+      </div>
+    </div>`;
+
+  const tableRows = rows.length===0
+    ? `<tr><td colspan="7" style="padding:30px;color:#bbb;text-align:center">
+        ${allRows.length===0?'No staff added yet for this week':'No staff for this location'}</td></tr>`
+    : rows.map(f=>{
+        const campColor=f.camp==='Shorouk'?'#8E44AD':f.camp==='Both'?'var(--orange)':'var(--teal)';
+        const campBg   =f.camp==='Shorouk'?'var(--purple-lt)':f.camp==='Both'?'var(--yellow-lt)':'var(--teal-lt)';
+        return `<tr>
+          <td style="font-weight:700;color:var(--teal)">${f.name}</td>
+          <td style="font-size:12px;color:#555">${f.role||'—'}</td>
+          <td><span style="font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;
+            background:${campBg};color:${campColor}">${f.camp}</span></td>
+          <td style="text-align:center">${f.days}</td>
+          <td style="text-align:center">${fmtN(f.dayRate)}</td>
+          <td style="font-weight:700;color:var(--green)">${fmtN((f.days||0)*(f.dayRate||0))} EGP</td>
+          <td><div style="display:flex;gap:4px">
+            <button class="edit-btn" onclick="editFreelancer('${f.id}','${wkKey}')">Edit</button>
+            <button class="del-btn"  onclick="delFreelancer('${f.id}','${wkKey}')">Del</button>
+          </div></td>
+        </tr>`;
+      }).join('');
+
+  const totalRow = rows.length>0?`
+    <tr style="background:var(--yellow-lt)">
+      <td colspan="5" style="font-weight:800;text-align:right;padding:10px 14px">
+        ${activeFrlCampFilter==='all'?'Week Total':'Filtered Total'} (${rows.length} staff):
+      </td>
+      <td style="font-weight:900;color:var(--teal);font-size:14px">${fmtN(filteredTotal)} EGP</td>
+      <td></td>
+    </tr>`:'';
 
   document.getElementById('frl-table-wrap').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-      <div style="font-size:15px;font-weight:800;color:var(--dark)">${WEEKS[activeFreelancerWeek].label} — Freelancers</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:15px;font-weight:800;color:var(--dark)">${WEEKS[activeFreelancerWeek].label} — Staff</div>
       <button class="hdr-btn" style="font-size:12px;padding:7px 14px" onclick="addFreelancer()">+ Add</button>
     </div>
-    <div class="tbl-wrap">
-    <table>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">${filterBtns}</div>
+    ${summaryCards}
+    <div class="tbl-wrap"><table>
       <thead><tr>
         <th>Name</th><th>Role</th><th>Camp</th><th>Days</th><th>Day Rate (EGP)</th><th>Total (EGP)</th><th></th>
       </tr></thead>
-      <tbody>
-        ${rows.length===0?`<tr><td colspan="7" style="padding:30px;color:#bbb;text-align:center">No freelancers added yet</td></tr>`
-          : rows.map(f=>`<tr>
-            <td style="font-weight:700;color:var(--teal)">${f.name}</td>
-            <td>${f.role||''}</td>
-            <td><span style="font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700;background:${f.camp==='Shorouk'?'var(--purple-lt)':'var(--teal-lt)'};color:${f.camp==='Shorouk'?'var(--purple)':'var(--teal)'}">${f.camp}</span></td>
-            <td>${f.days}</td>
-            <td>${fmtN(f.dayRate)}</td>
-            <td style="font-weight:700;color:var(--green)">${fmtN((f.days||0)*(f.dayRate||0))}</td>
-            <td>
-              <div style="display:flex;gap:4px">
-                <button class="edit-btn" onclick="editFreelancer('${f.id}','${wk}')">Edit</button>
-                <button class="del-btn"  onclick="delFreelancer('${f.id}','${wk}')">Del</button>
-              </div>
-            </td>
-          </tr>`).join('')}
-        ${rows.length>0?`<tr style="background:var(--yellow-lt)">
-          <td colspan="5" style="font-weight:800;text-align:right;padding:10px 14px">Week Total:</td>
-          <td style="font-weight:900;color:var(--teal);font-size:14px">${fmtN(total)} EGP</td>
-          <td></td>
-        </tr>`:''}
-      </tbody>
-    </table>
-    </div>`;
+      <tbody>${tableRows}${totalRow}</tbody>
+    </table></div>`;
 }
 
+function setFrlCampFilter(f) {
+  activeFrlCampFilter = f;
+  renderFreelancers();
+}
 function setFrlWeek(i) { activeFreelancerWeek=i; renderFreelancers(); }
 
 function addFreelancer() {
@@ -2727,7 +2958,7 @@ tbody td{padding:10px 12px;border-bottom:1px solid #f0f6f7;vertical-align:top;}
 .it{font-size:12px;color:#777;font-style:italic;}
 .tot-row td{font-weight:700;color:${accent};background:#e8f4f5;padding:11px 12px;}
 .footer{text-align:center;font-size:11px;color:#aaa;margin-top:10px;}
-@media print{body{background:#fff;padding:8px;}.notice{display:none;}}`;
+@media print{body{background:#fff;padding:8px;}.notice{display:none;} .sync-overlay,.share-modal-overlay,#pin-lock{display:none!important;}}`;
 }
 
 // ── BUILD ADMIN PAGE ──────────────────────────────────────────────────────────
@@ -3412,7 +3643,7 @@ checkOAuthReturn();
   // Current PIN: 1234 (change below to your desired PIN's hash)
   // To get hash of a new PIN, open browser console and run:
   //   let h=0x811c9dc5; '1234'.split('').forEach(c=>{h^=c.charCodeAt(0);h=(h*0x01000193)>>>0}); console.log(h.toString(16))
-  const CORRECT_HASH = hashPin('2008'); // ← CHANGE THIS
+  const CORRECT_HASH = hashPin('1234'); // ← CHANGE THIS
 
   // Check if already unlocked this session
   if(sessionStorage.getItem('lsc_unlocked')==='1') {
@@ -3468,6 +3699,412 @@ checkOAuthReturn();
     else if(e.key==='Backspace') pinDel();
   });
 })();
+
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ATTENDANCE
+// ═══════════════════════════════════════════════════════════════════════════
+// DB.attendance = { "W1_Sun_10th": { childId: true/false, ... }, ... }
+// Unknown names stored separately: { "W1_Sun": ["name1","name2"] }
+
+let attMethod  = 'tick';
+let attInited  = false;
+
+const ATT_DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday'];
+
+function attKey(wi, day, camp) {
+  return `att_W${wi+1}_${day}_${camp}`;
+}
+
+function ensureAttData() {
+  if(!DB.attendance) DB.attendance = {};
+  if(!DB.attUnknown) DB.attUnknown = {};
+}
+
+function initAttendance() {
+  ensureAttData();
+  if(!attInited) {
+    // Populate week selector
+    const ws = document.getElementById('att-week');
+    if(ws) ws.innerHTML = WEEKS.map((w,i)=>`<option value="${i}">${w.label}</option>`).join('');
+    // Populate day selector
+    const ds = document.getElementById('att-day');
+    if(ds) ds.innerHTML = ATT_DAYS.map(d=>`<option value="${d}">${d}</option>`).join('');
+    attInited = true;
+  }
+  renderAttendance();
+}
+
+function getAttWi()   { return Number(document.getElementById('att-week')?.value ?? 0); }
+function getAttDay()  { return document.getElementById('att-day')?.value || 'Sunday'; }
+function getAttCamp() { return document.getElementById('att-camp')?.value || 'all'; }
+
+// Get enrolled children for selected week+camp
+function getEnrolledThisWeek() {
+  const wi   = getAttWi();
+  const camp = getAttCamp();
+  const all  = getAllChildren();
+  return all.filter(c => {
+    if(camp !== 'all' && c.camp !== camp) return false;
+    if(c.subType === 'monthly') {
+      const periods = (c.months&&c.months.length>0)?c.months:[{start:c.monthStart,end:c.monthEnd}];
+      return periods.some(p=>weekOverlapsMonthPeriod(wi,p.start,p.end));
+    }
+    return c.weekStart!=null && c.weekEnd!=null && wi>=c.weekStart && wi<=c.weekEnd;
+  });
+}
+
+function renderAttendance() {
+  ensureAttData();
+  const wi   = getAttWi();
+  const day  = getAttDay();
+  const camp = getAttCamp();
+  const key  = attKey(wi, day, camp);
+  const enrolled = getEnrolledThisWeek();
+  const rec  = DB.attendance[key] || {};
+  const unk  = DB.attUnknown[key] || [];
+
+  // Count stats
+  const present   = enrolled.filter(c => rec[c.id]);
+  const absent    = enrolled.filter(c => !rec[c.id]);
+  const unknown   = unk.length;
+  const total     = enrolled.length;
+
+  // Stats row
+  const statsEl = document.getElementById('att-stats');
+  if(statsEl) statsEl.innerHTML = [
+    { val: total,           lbl: 'Enrolled',      color: 'var(--teal)' },
+    { val: present.length,  lbl: '✅ Present',     color: 'var(--green)' },
+    { val: absent.length,   lbl: '❌ Absent',      color: 'var(--red)' },
+    { val: unknown,         lbl: '⚠️ Unknown',     color: 'var(--orange)' },
+  ].map(s=>`
+    <div class="att-stat-card" style="border-top:3px solid ${s.color}">
+      <div class="att-stat-val" style="color:${s.color}">${s.val}</div>
+      <div class="att-stat-lbl">${s.lbl}</div>
+    </div>`).join('');
+
+  // Log date label
+  const logDate = document.getElementById('att-log-date');
+  if(logDate) logDate.textContent = `${day}, ${WEEKS[wi].label}`;
+
+  // Tick grid
+  const grid = document.getElementById('att-tick-grid');
+  if(grid) {
+    if(enrolled.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#aaa;font-size:14px">No children enrolled this week for selected camp</div>';
+    } else {
+      grid.innerHTML = enrolled.map(c=>{
+        const checked = !!rec[c.id];
+        const age = calcAge(c.dob);
+        return `<div class="att-tick-item ${checked?'checked':''}" id="tick-${c.id}"
+          onclick="toggleTick('${c.id}','${key}')">
+          <div class="att-tick-box"></div>
+          <div style="flex:1">
+            <div class="att-tick-name">${c.name}</div>
+            <div class="att-tick-sub">${c.group} · ${age??'-'} yrs · ${c.camp}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Results log
+  renderAttLog(enrolled, rec, unk, key);
+}
+
+function toggleTick(childId, key) {
+  ensureAttData();
+  if(!DB.attendance[key]) DB.attendance[key] = {};
+  DB.attendance[key][childId] = !DB.attendance[key][childId];
+  saveData();
+  // Update tick item UI
+  const item = document.getElementById('tick-'+childId);
+  if(item) item.className = 'att-tick-item' + (DB.attendance[key][childId]?' checked':'');
+  // Re-render stats + log only
+  const wi   = getAttWi();
+  const day  = getAttDay();
+  const camp = getAttCamp();
+  const enrolled = getEnrolledThisWeek();
+  const rec  = DB.attendance[key] || {};
+  const unk  = DB.attUnknown[key] || [];
+  // Update stats
+  const present = enrolled.filter(c=>rec[c.id]).length;
+  const absent  = enrolled.filter(c=>!rec[c.id]).length;
+  const statsEl = document.getElementById('att-stats');
+  if(statsEl) {
+    const cards = statsEl.querySelectorAll('.att-stat-val');
+    if(cards[1]) cards[1].textContent = present;
+    if(cards[2]) cards[2].textContent = absent;
+  }
+  renderAttLog(enrolled, rec, unk, key);
+}
+
+// MANUAL SEARCH
+function attManualSearch() {
+  const q = (document.getElementById('att-manual-input')?.value||'').trim().toLowerCase();
+  const results = document.getElementById('att-manual-results');
+  if(!results) return;
+  if(q.length < 2) { results.innerHTML=''; return; }
+
+  const wi   = getAttWi();
+  const day  = getAttDay();
+  const camp = getAttCamp();
+  const key  = attKey(wi,day,camp);
+  const enrolled = getEnrolledThisWeek();
+  const rec  = DB.attendance[key]||{};
+
+  // Levenshtein fuzzy match — catches typos and spelling variants
+  const matches = enrolled
+    .map(ch=>({ ch, score:similarity(ch.name, q) }))
+    .filter(x => x.score > 0.5 || x.ch.name.toLowerCase().includes(q))
+    .sort((a,b) => b.score - a.score)
+    .map(x => x.ch);
+
+  // Also check if name exists anywhere in DB (even not enrolled this week)
+  const allChildren = getAllChildren();
+  const inDB = allChildren.filter(c=>c.name.toLowerCase().includes(q));
+
+  if(matches.length === 0 && inDB.length === 0) {
+    results.innerHTML=`<div style="background:var(--orange-lt);border:1.5px solid var(--orange);border-radius:12px;padding:14px;font-size:13px;color:var(--orange);font-weight:600">
+      ⚠️ "${q}" — not found in any list. Possibly unregistered child.</div>`;
+    return;
+  }
+
+  results.innerHTML = `<div class="att-log-wrap">` +
+    (matches.length>0 ? matches.map(c=>{
+      const isPresent = !!rec[c.id];
+      const age = calcAge(c.dob);
+      return `<div class="att-result-row">
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--teal)">${c.name}</div>
+          <div style="font-size:11px;color:#888">${c.group} · ${age??'-'} yrs · ${c.camp} · ${c.phone}</div>
+          ${similarity(c.name,q)<0.95&&similarity(c.name,q)>0.5?`<div style="font-size:10px;color:var(--orange);font-weight:600">⚠️ ${matchQuality(similarity(c.name,q)).label} — تأكد إنه نفس الطفل</div>`:''}
+        </div>
+        <span class="att-status-badge ${isPresent?'att-ok':'att-miss'}">${isPresent?'✅ Present':'❌ Absent'}</span>
+        <span class="att-status-badge att-ok" style="background:#e8f4f5;color:var(--teal)">✓ Enrolled W${wi+1}</span>
+        <button onclick="toggleTick('${c.id}','${key}');attManualSearch()"
+          style="padding:5px 12px;background:${isPresent?'var(--red-lt)':'var(--teal-lt)'};
+          color:${isPresent?'var(--red)':'var(--teal)'};border:none;border-radius:8px;
+          font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font)">
+          ${isPresent?'Mark Absent':'Mark Present'}
+        </button>
+      </div>`;
+    }).join('') : '') +
+    (inDB.filter(c=>!matches.find(m=>m.id===c.id)).length>0 ?
+      `<div style="padding:10px 14px;font-size:12px;color:#888;font-weight:600;background:#f9f9f9">
+        Not enrolled this week but exists in DB:</div>` +
+      inDB.filter(c=>!matches.find(m=>m.id===c.id)).map(c=>`
+        <div class="att-result-row">
+          <div style="flex:1">
+            <div style="font-weight:700;color:#888">${c.name}</div>
+            <div style="font-size:11px;color:#aaa">${c.group} · ${c.camp} · ${c.phone}</div>
+          </div>
+          <span class="att-status-badge att-new">Not enrolled W${wi+1}</span>
+        </div>`)
+      .join('')
+    : '') +
+    `</div>`;
+}
+
+// PASTE LIST ANALYSIS
+function attAnalyzeImport() {
+  const raw = document.getElementById('att-import-input')?.value || '';
+  const results = document.getElementById('att-import-results');
+  if(!results || !raw.trim()) return;
+
+  const wi   = getAttWi();
+  const day  = getAttDay();
+  const camp = getAttCamp();
+  const key  = attKey(wi,day,camp);
+  const enrolled = getEnrolledThisWeek();
+  const rec  = DB.attendance[key]||{};
+  const allChildren = getAllChildren();
+
+  // Parse names — split by newline, comma, or semicolon
+  const names = raw.split(/[\n,،;]+/)
+    .map(n=>n.trim())
+    .filter(n=>n.length>1);
+
+  if(names.length === 0) {
+    results.innerHTML='<div style="color:var(--red);font-size:13px">No names found in the pasted text</div>';
+    return;
+  }
+
+  const found_enrolled   = [];
+  const found_not_enrolled = [];
+  const not_found        = [];
+
+  names.forEach(name=>{
+    const normName = name.toLowerCase();
+    // Try to match in enrolled
+    // Use Levenshtein similarity — catches spelling variants like Selim/Seliem
+    const enrolledScored = enrolled.map(c=>({c,score:similarity(c.name,name)}))
+      .sort((a,b)=>b.score-a.score);
+    const bestEnrolled = enrolledScored[0];
+    const inEnrolled = bestEnrolled && bestEnrolled.score > 0.55 ? bestEnrolled.c : null;
+    if(inEnrolled) {
+      found_enrolled.push({ inputName:name, child:inEnrolled });
+      // Auto-mark as present
+      if(!DB.attendance[key]) DB.attendance[key]={};
+      DB.attendance[key][inEnrolled.id]=true;
+    } else {
+      // Try in all DB
+      const dbScored = allChildren.map(c=>({c,score:similarity(c.name,name)})).sort((a,b)=>b.score-a.score);
+      const inDB = dbScored[0]&&dbScored[0].score>0.55 ? dbScored[0].c : null;
+      if(inDB) found_not_enrolled.push({ inputName:name, child:inDB });
+      else not_found.push(name);
+    }
+  });
+
+  // Add unknowns to attUnknown
+  if(!DB.attUnknown[key]) DB.attUnknown[key]=[];
+  not_found.forEach(n=>{ if(!DB.attUnknown[key].includes(n)) DB.attUnknown[key].push(n); });
+  saveData();
+
+  // Render results
+  const section=(title,color,icon,items,renderFn)=>items.length===0?'':
+    `<div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:12px">
+      <div style="background:${color};color:#fff;padding:10px 14px;font-size:13px;font-weight:800">
+        ${icon} ${title} (${items.length})</div>
+      ${items.map(renderFn).join('')}
+    </div>`;
+
+  results.innerHTML =
+    `<div style="font-size:13px;font-weight:700;color:var(--dark);margin-bottom:12px">
+      Analyzed ${names.length} names — auto-marked enrolled children as present</div>` +
+    section('Present & Enrolled','var(--green)','✅', found_enrolled, ({inputName,child})=>{
+      const sim=similarity(child.name,inputName);
+      const mq=matchQuality(sim);
+      return `<div class="att-result-row">
+        <div style="flex:1">
+          <div style="font-weight:700">${child.name}</div>
+          ${inputName.toLowerCase()!==child.name.toLowerCase()?
+            `<div style="font-size:11px;color:${mq.color};font-weight:600">Input: "${inputName}" — ${mq.label}</div>`:''}
+          <div style="font-size:11px;color:#888">${child.group} · ${child.camp} · ${child.phone}</div>
+        </div>
+        <span class="att-status-badge att-ok">✅ Marked Present</span>
+      </div>`;
+    }) +
+    section('Not Enrolled This Week','var(--orange)','⚠️', found_not_enrolled, ({inputName,child})=>`
+      <div class="att-result-row">
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--orange)">${child.name}</div>
+          ${inputName.toLowerCase()!==child.name.toLowerCase()?`<div style="font-size:11px;color:#aaa">Input: "${inputName}"</div>`:''}
+          <div style="font-size:11px;color:#888">${child.group} · ${child.camp} · ${child.phone}</div>
+        </div>
+        <span class="att-status-badge att-warn">Not enrolled W${wi+1}</span>
+      </div>`) +
+    section('Not Found in System','#888','❓', not_found, name=>`
+      <div class="att-result-row">
+        <div style="flex:1;font-weight:700;color:#888">${name}</div>
+        <span class="att-status-badge att-new">Unregistered</span>
+      </div>`);
+
+  // Refresh main view
+  renderAttendance();
+}
+
+// RESULTS LOG
+function renderAttLog(enrolled, rec, unk, key) {
+  const logBody = document.getElementById('att-log-body');
+  if(!logBody) return;
+  if(enrolled.length===0 && unk.length===0) {
+    logBody.innerHTML='<div style="padding:24px;text-align:center;color:#aaa;font-size:13px">No data yet — use Tick List or Paste List above</div>';
+    return;
+  }
+
+  const present = enrolled.filter(c=>rec[c.id]);
+  const absent  = enrolled.filter(c=>!rec[c.id]);
+
+  const section=(title,color,items,renderFn)=>items.length===0?'':
+    `<div style="background:${color};padding:8px 14px;font-size:12px;font-weight:800;color:var(--dark)">${title} (${items.length})</div>` +
+    items.map(renderFn).join('');
+
+  logBody.innerHTML =
+    section('✅ Present','#eafaf1', present, c=>{
+      const age=calcAge(c.dob);
+      return `<div class="att-result-row">
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--green)">${c.name}</div>
+          <div style="font-size:11px;color:#888">${c.group} · ${age??'-'} yrs · ${c.phone}</div>
+        </div>
+        <span class="att-status-badge att-ok">Present</span>
+        <button onclick="toggleTick('${c.id}','${key}');renderAttendance()"
+          style="padding:3px 10px;background:var(--red-lt);color:var(--red);border:none;
+          border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font)">Undo</button>
+      </div>`;
+    }) +
+    section('❌ Absent','#fff5f5', absent, c=>{
+      const age=calcAge(c.dob);
+      return `<div class="att-result-row">
+        <div style="flex:1">
+          <div style="font-weight:700;color:var(--red)">${c.name}</div>
+          <div style="font-size:11px;color:#888">${c.group} · ${age??'-'} yrs · ${c.phone}</div>
+        </div>
+        <span class="att-status-badge att-miss">Absent</span>
+      </div>`;
+    }) +
+    (unk.length>0 ?
+      `<div style="background:var(--orange-lt);padding:8px 14px;font-size:12px;font-weight:800;color:var(--dark)">⚠️ Unknown / Unregistered (${unk.length})</div>` +
+      unk.map(name=>`<div class="att-result-row">
+        <div style="font-weight:700;color:var(--orange);flex:1">${name}</div>
+        <span class="att-status-badge att-warn">Not in system</span>
+        <button onclick="removeAttUnknown('${key}','${name.replace(/'/g,"\\'")}');renderAttendance()"
+          style="padding:3px 8px;background:var(--red-lt);color:var(--red);border:none;
+          border-radius:6px;font-size:11px;cursor:pointer;font-family:var(--font)">✕</button>
+      </div>`).join('')
+    : '');
+}
+
+function removeAttUnknown(key, name) {
+  ensureAttData();
+  DB.attUnknown[key] = (DB.attUnknown[key]||[]).filter(n=>n!==name);
+  saveData();
+}
+
+function setAttMethod(m) {
+  attMethod = m;
+  ['tick','manual','import'].forEach(x=>{
+    document.getElementById('attm-'+x).className='att-method-tab'+(x===m?' active':'');
+    document.getElementById('att-method-'+x).style.display=x===m?'block':'none';
+  });
+}
+
+function clearAttendance() {
+  const wi  = getAttWi();
+  const day = getAttDay();
+  const camp= getAttCamp();
+  const key = attKey(wi,day,camp);
+  if(!window.confirm(`Clear all attendance for ${day}, W${wi+1}?`)) return;
+  ensureAttData();
+  DB.attendance[key]={};
+  DB.attUnknown[key]=[];
+  saveData();
+  renderAttendance();
+  showToast('Attendance cleared');
+}
+
+function exportAttendance() {
+  const wi   = getAttWi();
+  const day  = getAttDay();
+  const camp = getAttCamp();
+  const key  = attKey(wi,day,camp);
+  const enrolled = getEnrolledThisWeek();
+  const rec  = DB.attendance[key]||{};
+  const unk  = DB.attUnknown[key]||[];
+
+  const wb  = XLSX.book_new();
+  const hdr = ['Name','Group','Camp','Age','Phone','Status'];
+  const rows = [
+    ...enrolled.map(c=>[ c.name, c.group, c.camp, calcAge(c.dob)??'', c.phone, rec[c.id]?'Present':'Absent' ]),
+    ...unk.map(n=>[n,'?','?','?','?','Unknown/Unregistered']),
+  ];
+  const totRow=['','','','','TOTAL: '+enrolled.length+' enrolled | '+enrolled.filter(c=>rec[c.id]).length+' present',''];
+  XLSX.book_append_sheet(wb, XLSX.aoa_to_sheet([hdr,...rows,totRow]),
+    `${day} W${wi+1}`);
+  XLSX.writeFile(wb, `Attendance_W${wi+1}_${day}.xlsx`);
+  showToast('Attendance exported!');
+}
 
 </script>
 
